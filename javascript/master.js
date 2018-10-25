@@ -1,11 +1,24 @@
+'use strict';
+
 $(function() {
 
   $('#timeline').css('height', window.innerHeight);
+
   InitPixi();
+  LoadTextures(['data/img/fruits.png']);
 
 });
 
+/*********/
 let app = undefined;
+let renderer = undefined;
+let path_images = 'data/img/';
+let sprites = {};
+/*********/
+
+//
+// Init Pixi
+//
 function InitPixi() {
   let type = "WebGL"
   if (!PIXI.utils.isWebGLSupported()) {
@@ -14,24 +27,48 @@ function InitPixi() {
 
   PIXI.utils.sayHello(type)
 
-  //Create a Pixi Application
-  let container = document.getElementById('timeline');
+  // create pixi app
+  let container = $('#timeline');
   app = new PIXI.Application({
-    width: container.offsetWidth,
-    height: container.offsetHeight,
+    width: container.width(),
+    height: container.height(),
     antialias: true
   });
 
-  app.renderer.backgroundColor = 0xDDEEDD;
-  app.renderer.autoResize = true;
+  renderer = app.renderer;
+  renderer.backgroundColor = 0xDDEEDD;
+  renderer.autoResize = true;
 
-  app.renderer.view.style.width = '100%';
-  app.renderer.view.style.height = '100%';
+  renderer.view.style.width = '100%';
+  renderer.view.style.height = '100%';
 
-  //Add the canvas that Pixi automatically created for you to the HTML document
-  container.appendChild(app.view);
-
+  // add canvas to HTML
+  container.append(app.view);
 }
+
+//
+// Load Textures
+//
+function LoadTextures(images) {
+  images.forEach(img => path_images + img);
+  PIXI.loader.add(images).load(()=>{
+    for (let img of images) {
+      //console.log(img);
+      sprites[img] = new PIXI.Sprite(PIXI.loader.resources[img].texture);
+      app.stage.addChild(sprites[img]);
+    }
+  });
+}
+
+
+
+/*
+███    ███ ██ ███████  ██████
+████  ████ ██ ██      ██
+██ ████ ██ ██ ███████ ██
+██  ██  ██ ██      ██ ██
+██      ██ ██ ███████  ██████
+*/
 
 //
 // resize timeline on window resize
