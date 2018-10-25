@@ -7,7 +7,8 @@ $(function() {
   InitPixi();
   // CreateTimeline();
   timeline.Create();
-  timeline.SetColor(0xFF0000);
+
+  timeline.test = 'asdf';
 
 });
 
@@ -26,7 +27,7 @@ let renderer = undefined;
 let Graphics = PIXI.Graphics;
 let path_images = 'data/img/';
 let sprites = {};
-let timeline = {};
+let timeline = undefined;
 /*********/
 
 //
@@ -87,36 +88,45 @@ function LoadTextures(images, on_done) {
   });
 }
 
+
 /*
-██████  ███████ ███    ██ ██████  ███████ ██████  ██ ███    ██  ██████
-██   ██ ██      ████   ██ ██   ██ ██      ██   ██ ██ ████   ██ ██
-██████  █████   ██ ██  ██ ██   ██ █████   ██████  ██ ██ ██  ██ ██   ███
-██   ██ ██      ██  ██ ██ ██   ██ ██      ██   ██ ██ ██  ██ ██ ██    ██
-██   ██ ███████ ██   ████ ██████  ███████ ██   ██ ██ ██   ████  ██████
+████████ ██ ███    ███ ███████ ██      ██ ███    ██ ███████
+   ██    ██ ████  ████ ██      ██      ██ ████   ██ ██
+   ██    ██ ██ ████ ██ █████   ██      ██ ██ ██  ██ █████
+   ██    ██ ██  ██  ██ ██      ██      ██ ██  ██ ██ ██
+   ██    ██ ██      ██ ███████ ███████ ██ ██   ████ ███████
 */
 
-
-//
-// Timeline
-//
 timeline = {
 
+  //
+  // Create
+  //
   Create: function() {
-    this.line = new Graphics();
-    this.line.lineStyle(2, this.color, 1);
-    this.line.moveTo(0, 50);
-    this.line.lineTo(500, 50);
-
-    app.stage.addChild(this.line);
+    if (this._line) app.stage.removeChild(this._line);
+    this._line = new Graphics();
+    this._line.lineStyle(this._width, this._color, 1);
+    this._line.moveTo(0, this._y * $('#timeline').height());
+    this._line.lineTo($('#timeline').width(), this._y * $('#timeline').height());
+    app.stage.addChild(this._line);
   },
 
-  SetColor: function(color) {
-    // this.color = color;
-    // this.line.lineStyle(2, this.color, 1);
-  },
+  //
+  // properties
+  //
+  _line: undefined,
 
-  line: undefined,
-  color: 0x000000
+  _color: 0x000000,
+  get color() { return this._color; },
+  set color(value) { this._color = value; this.Create(); },
+
+  _width: 1,
+  get width() { return this._width; },
+  set width(value) { this._width = value; this.Create(); },
+
+  _y: 0.5,
+  get y() { return this._y; },
+  set y(value) { this._y = value; this.Create(); },
 
 }
 
@@ -135,6 +145,7 @@ timeline = {
 $(window).resize(
   Debounce(()=>{
     $('#timeline').css('height', window.innerHeight);
+    if (timeline) timeline.Create();
   }, 50 )
 );
 
