@@ -1,18 +1,5 @@
 'use strict';
 
-$(function() {
-
-  $('#timeline').css('height', window.innerHeight);
-
-  InitPixi();
-  // CreateTimeline();
-  timeline.Create();
-
-  timeline.test = 'asdf';
-
-});
-
-
 /*
 ██████  ██ ██   ██ ██     ███████ ████████ ██    ██ ███████ ███████
 ██   ██ ██  ██ ██  ██     ██         ██    ██    ██ ██      ██
@@ -21,42 +8,34 @@ $(function() {
 ██      ██ ██   ██ ██     ███████    ██     ██████  ██      ██
 */
 
+
 /*********/
-let app = undefined;
-let renderer = undefined;
-let Graphics = PIXI.Graphics;
-let path_images = 'data/img/';
-let sprites = {};
-let timeline = undefined;
+var app = undefined;
+var Graphics = PIXI.Graphics;
+var path_images = 'data/img/';
+var sprites = {};
+var timeline = undefined;
 /*********/
 
 //
 // Init Pixi
 //
 function InitPixi() {
-  let type = "WebGL"
-  if (!PIXI.utils.isWebGLSupported()) {
-    type = "canvas"
-  }
+  PIXI.utils.sayHello(PIXI.utils.isWebGLSupported() ? 'WebGL' : 'canvas');
 
-  PIXI.utils.sayHello(type)
-
-  // create pixi app
+  // create & config pixi app
   let container = $('#timeline');
   app = new PIXI.Application({
     width: container.width(),
     height: container.height(),
     antialias: true
   });
+  app.renderer.backgroundColor = 0xDDEEDD;
+  app.renderer.autoResize = true;
+  app.renderer.view.style.width = '100%';
+  app.renderer.view.style.height = '100%';
 
-  renderer = app.renderer;
-  renderer.backgroundColor = 0xDDEEDD;
-  renderer.autoResize = true;
-
-  renderer.view.style.width = '100%';
-  renderer.view.style.height = '100%';
-
-  // add canvas to HTML
+  // add pixi canvas to HTML
   container.append(app.view);
 }
 
@@ -88,6 +67,26 @@ function LoadTextures(images, on_done) {
   });
 }
 
+/*
+ ██████  █████  ██      ███████ ███    ██ ██████   █████  ██████
+██      ██   ██ ██      ██      ████   ██ ██   ██ ██   ██ ██   ██
+██      ███████ ██      █████   ██ ██  ██ ██   ██ ███████ ██████
+██      ██   ██ ██      ██      ██  ██ ██ ██   ██ ██   ██ ██   ██
+ ██████ ██   ██ ███████ ███████ ██   ████ ██████  ██   ██ ██   ██
+*/
+
+class Timepoint {
+  constructor(year, month, day) {
+    this.year = year;
+    this.month = month;
+    this.day = day;
+  }
+
+  toString() {
+    let str = this.year > 0 ? this.year : this.year * -1;
+    return str;
+  }
+}
 
 /*
 ████████ ██ ███    ███ ███████ ██      ██ ███    ██ ███████
@@ -97,59 +96,79 @@ function LoadTextures(images, on_done) {
    ██    ██ ██      ██ ███████ ███████ ██ ██   ████ ███████
 */
 
+
 timeline = {
 
   //
   // Create
   //
   Create: function() {
-    if (this._line) app.stage.removeChild(this._line);
-    this._line = new Graphics();
-    this._line.lineStyle(this._width, this._color, 1);
-    this._line.moveTo(0, this._y * $('#timeline').height());
-    this._line.lineTo($('#timeline').width(), this._y * $('#timeline').height());
-    app.stage.addChild(this._line);
+    if (this.line._graphic) app.stage.removeChild(this.line._graphic);
+    this.line._graphic = new Graphics();
+    this.line._graphic.lineStyle(this.line._width, this.line._color, 1);
+    this.line._graphic.moveTo(0, this.line._y * $('#timeline').height());
+    this.line._graphic.lineTo($('#timeline').width(), this.line._y * $('#timeline').height());
+    app.stage.addChild(this.line._graphic);
   },
 
   //
   // properties
   //
-  _line: undefined,
+  start: new Timepoint(-10000),
+  end: new Timepoint(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
 
-  _color: 0x000000,
-  get color() { return this._color; },
-  set color(value) { this._color = value; this.Create(); },
+  line: {
+    _graphic: undefined,
 
-  _width: 1,
-  get width() { return this._width; },
-  set width(value) { this._width = value; this.Create(); },
+    _y: 0.5,
+    get y() { return this._y; },
+    set y(value) { this._y = value; this.Create(); },
 
-  _y: 0.5,
-  get y() { return this._y; },
-  set y(value) { this._y = value; this.Create(); },
+    _color: 0x000000,
+    get color() { return this._color; },
+    set color(value) { this._color = value; this.Create(); },
+
+    _width: 1,
+    get width() { return this._width; },
+    set width(value) { this._width = value; this.Create(); }
+  }
 
 }
 
 
 /*
-███    ███ ██ ███████  ██████
-████  ████ ██ ██      ██
-██ ████ ██ ██ ███████ ██
-██  ██  ██ ██      ██ ██
-██      ██ ██ ███████  ██████
+███████ ██    ██ ███████ ███    ██ ████████ ███████
+██      ██    ██ ██      ████   ██    ██    ██
+█████   ██    ██ █████   ██ ██  ██    ██    ███████
+██       ██  ██  ██      ██  ██ ██    ██         ██
+███████   ████   ███████ ██   ████    ██    ███████
 */
 
+
 //
-// resize timeline on window resize
+// Handle Scroll
+//
+function Scroll(x, y) {}
+
+//
+// Window Resize
 //
 $(window).resize(
-  Debounce(()=>{
+  Debounce(_=>{
     $('#timeline').css('height', window.innerHeight);
     if (timeline) timeline.Create();
-  }, 50 )
+  })
 );
 
-function Debounce(func, wait) {
+//
+// (Mouse) Wheel
+//
+document.body.addEventListener('wheel', e => Scroll(e.deltaX, e.deltaY), {passive: true});
+
+//
+// Debounce
+//
+function Debounce(func, wait = 50) {
   var timeout;
   return function() {
     var context = this,
@@ -164,3 +183,8 @@ function Debounce(func, wait) {
     if (callNow) func.apply(context, args);
   };
 }
+
+
+$('#timeline').css('height', window.innerHeight);
+InitPixi();
+timeline.Create();
