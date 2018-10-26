@@ -6,6 +6,8 @@
  ██████ ██   ██ ██   ██  ██████  ██   ████  ██████  ███████
 */
 
+export { chronos };
+
 //
 // Date
 //
@@ -61,9 +63,19 @@ class _Date {
 }
 
 //
-// Namespace & Export
+// Timepoint
+//
+class _Timepoint {
+  constructor(name, date) {
+    this.date = date;
+    this.name = name;
+  }
+}
+
+//
+// Namespace
 //
 const chronos = {
-  Date: _Date
+  Date: _Date,
+  Timepoint: _Timepoint
 }
-export { chronos };
