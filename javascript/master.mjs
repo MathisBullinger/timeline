@@ -59,6 +59,18 @@ var timeline = {
       label.position.x = (date.year+10000) / (this._max.year + 10000) * $('#timeline').width() - 10;
       label.position.y = this._y * $('#timeline').height() - 25;
       label.rotation = -1.5;
+
+      // adjust manually for demo
+      if (name == 'Founding of United Nations') {
+        label.anchor.set(1,1);
+        label.rotation = -1.5;
+        label.position.x += 14;
+        label.position.y += 40;
+      } else if (name == 'Apollo 11') {
+        label.position.x -= 5;
+      } else if (name == 'First Temple') {
+        label.position.x += 10;
+      }
     },
     log: function() {
       for (let point of this._points) {
@@ -177,7 +189,7 @@ timeline.timepoints.add('Ancient Greece', new chronos.Date(-900));
 timeline.timepoints.add('Roman defeats Carthage', new chronos.Date(-146));
 timeline.timepoints.add('Mayan started building structure with Long Count', new chronos.Date(250));
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
-timeline.timepoints.add('Foundint of United Nations', new chronos.Date(1945));
+timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
 
 timeline.timepoints.log();
