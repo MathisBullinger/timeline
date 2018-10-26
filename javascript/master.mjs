@@ -1,5 +1,7 @@
 'use strict';
 
+import { chronos } from './chronos.mjs';
+
 /*
 ██████  ██ ██   ██ ██     ███████ ████████ ██    ██ ███████ ███████
 ██   ██ ██  ██ ██  ██     ██         ██    ██    ██ ██      ██
@@ -68,27 +70,6 @@ function LoadTextures(images, on_done) {
 }
 
 /*
- ██████  █████  ██      ███████ ███    ██ ██████   █████  ██████
-██      ██   ██ ██      ██      ████   ██ ██   ██ ██   ██ ██   ██
-██      ███████ ██      █████   ██ ██  ██ ██   ██ ███████ ██████
-██      ██   ██ ██      ██      ██  ██ ██ ██   ██ ██   ██ ██   ██
- ██████ ██   ██ ███████ ███████ ██   ████ ██████  ██   ██ ██   ██
-*/
-
-class Timepoint {
-  constructor(year, month, day) {
-    this.year = year;
-    this.month = month;
-    this.day = day;
-  }
-
-  toString() {
-    let str = this.year > 0 ? this.year : this.year * -1;
-    return str;
-  }
-}
-
-/*
 ████████ ██ ███    ███ ███████ ██      ██ ███    ██ ███████
    ██    ██ ████  ████ ██      ██      ██ ████   ██ ██
    ██    ██ ██ ████ ██ █████   ██      ██ ██ ██  ██ █████
@@ -114,8 +95,8 @@ timeline = {
   //
   // properties
   //
-  start: new Timepoint(-10000),
-  end: new Timepoint(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
+  start: new chronos.Date(-10000),
+  end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
 
   line: {
     _graphic: undefined,
@@ -184,7 +165,10 @@ function Debounce(func, wait = 50) {
   };
 }
 
-
 $('#timeline').css('height', window.innerHeight);
 InitPixi();
 timeline.Create();
+
+(today => console.log(`\n  ${'\u{1F4C5} \u{1F5D3} '.repeat(7)}\u{1F4C5}\n\nToday is the ${today.gregorian.toString()} - that's the ${today.holocene.toString()} in the Holocene calendar.\n
+%c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796`, 'font-size: 20px')
+)(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
