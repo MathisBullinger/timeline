@@ -6,11 +6,12 @@
 ██      ██ ██   ██ ██     ███████    ██     ██████  ██      ██
 */
 
-export { InitPixi, LoadTextures, Resize, app, view, Graphics };
+export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics };
 
 var app;
 var renderer;
 var view;
+var settings;
 var Graphics = PIXI.Graphics;
 var path_images = 'data/img/';
 var sprites = {};
@@ -24,17 +25,23 @@ function InitPixi() {
 
   PIXI.utils.sayHello(PIXI.utils.isWebGLSupported() ? 'WebGL' : 'canvas');
 
+  settings = PIXI.settings;
+  settings.RESOLUTION = 2;
+  console.log(settings);
+
   // create & config pixi app
   let container = $('#timeline');
   app = new PIXI.Application({
     width: $('#timeline').width(),
     height: $('#timeline').height(),
-    antialias: true
+    antialias: true,
+    autoResize: true,
+    resolution: 2
   });
   view = app.view;
   renderer = app.renderer;
   renderer.backgroundColor = 0xDDEEDD;
-  Resize();
+  // Resize();
 
   // add pixi canvas to HTML
   container.append(app.view);
@@ -46,9 +53,15 @@ function InitPixi() {
 function Resize() {
   $('#timeline').width($(window).innerWidth());
   $('#timeline').height($(window).innerHeight());
-  renderer.view.width = $('#timeline').width()
-  renderer.view.height = $('#timeline').height()
-  renderer.resize(view.width, view.height)
+  view.width = $('#timeline').width();
+  view.height = $('#timeline').height();
+  console.log('width', view.width, $('#timeline').width());
+  renderer.resize(view.width, view.height);
+  // view.width = $('#timeline').width();
+  // view.height = $('#timeline').height();
+  // $('#timeline > canvas').attr('width', $('#timeline').width());
+  $('#timeline > canvas').css('display', 'none');
+  console.log('width', view.width, $('#timeline').width())
   console.log(`resize to (${renderer.width}px, ${renderer.height}px)`);
 }
 

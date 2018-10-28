@@ -1,7 +1,14 @@
 'use strict';
 
 import {chronos} from './chronos.mjs';
-import {InitPixi, LoadTextures, Resize, app, view, Graphics} from './graphics.mjs';
+import {InitPixi, LoadTextures, Resize, app, view, renderer, settings, Graphics} from './graphics.mjs';
+
+function can_width() {
+  return $('#timeline').width();
+}
+function can_height() {
+  return $('#timeline').height();
+}
 
 /*
 ████████ ██ ███    ███ ███████ ██      ██ ███    ██ ███████
@@ -21,8 +28,8 @@ var timeline = {
       app.stage.removeChild(this.line._graphic);
     this.line._graphic = new Graphics();
     this.line._graphic.lineStyle(this.line._width, this.line._color, 1);
-    this.line._graphic.moveTo(0, this.line._y * view.height);
-    this.line._graphic.lineTo(view.width, this.line._y * view.height);
+    this.line._graphic.moveTo(0, this.line._y * can_height());
+    this.line._graphic.lineTo(can_width(), this.line._y * can_height());
     app.stage.addChild(this.line._graphic);
 
     this.timepoints._y = this.line._y;
@@ -63,7 +70,7 @@ var timeline = {
   end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
 
   get y() {
-    return this.line._y * view.height;
+    return this.line._y * can_height();
   },
   get event_radius() {
     return 15;
@@ -80,7 +87,7 @@ var timeline = {
       let graphic = this._points[this._points.length - 1]['_graphic'];
       graphic.lineStyle(1, 0x000000, 1);
       graphic.drawCircle(0, 0, $(window).innerWidth() < 800 ? 4 : 8);
-      graphic.position.set((date.year+10000) / (this._max.year + 10000) * view.width, this._y * view.height);
+      graphic.position.set((date.year+10000) / (this._max.year + 10000) * can_width(), this._y * can_height());
       app.stage.addChild(graphic);
 
       // add text label
@@ -89,8 +96,8 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
-      label.position.x = (date.year+10000) / (this._max.year + 10000) * view.width - 10;
-      label.position.y = this._y * view.height - 25;
+      label.position.x = (date.year+10000) / (this._max.year + 10000) * can_width() - 10;
+      label.position.y = this._y * can_height() - 25;
       label.rotation = -1.5;
       app.stage.addChild(label);
 
@@ -234,3 +241,9 @@ timeline.timepoints.add('Mayan started building structure with Long Count', new 
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
+
+//console.log('stage', app.stage);
+//console.log(app.stage.scale);
+//console.log(app.stage.width);
+//console.log(app.stage.scale);
+//app.stage.scale.set(0.5);
