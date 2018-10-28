@@ -222,6 +222,16 @@ function Debounce(callback, delay = 50) {
 ███████ ██   ████    ██    ██   ██    ██
 */
 
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  $('body').append(`
+    <div class="phoneblock">
+      <p>This website doesn't support a mobile view yet.<p>
+      <button id="bt-mobile-show">Show me anyway!</button>
+    </div>
+  `);
+  $('#bt-mobile-show').click(_ => $('.phoneblock').css('display', 'none'));
+}
+
 InitPixi();
 timeline.Create();
 
@@ -241,9 +251,3 @@ timeline.timepoints.add('Mayan started building structure with Long Count', new 
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
-
-//console.log('stage', app.stage);
-//console.log(app.stage.scale);
-//console.log(app.stage.width);
-//console.log(app.stage.scale);
-//app.stage.scale.set(0.5);

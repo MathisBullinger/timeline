@@ -36,7 +36,7 @@ function InitPixi() {
     height: $('#timeline').height(),
     antialias: true,
     autoResize: true,
-    resolution: 2
+    resolution: window.devicePixelRatio
   });
   view = app.view;
   renderer = app.renderer;
@@ -55,13 +55,7 @@ function Resize() {
   $('#timeline').height($(window).innerHeight());
   view.width = $('#timeline').width();
   view.height = $('#timeline').height();
-  console.log('width', view.width, $('#timeline').width());
   renderer.resize(view.width, view.height);
-  // view.width = $('#timeline').width();
-  // view.height = $('#timeline').height();
-  // $('#timeline > canvas').attr('width', $('#timeline').width());
-  $('#timeline > canvas').css('display', 'none');
-  console.log('width', view.width, $('#timeline').width())
   console.log(`resize to (${renderer.width}px, ${renderer.height}px)`);
 }
 
