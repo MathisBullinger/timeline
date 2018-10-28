@@ -19,6 +19,9 @@ var sprites = {};
 // Init Pixi
 //
 function InitPixi() {
+  $('#timeline').width(window.innerWidth);
+  $('#timeline').height(window.innerHeight);
+
   PIXI.utils.sayHello(PIXI.utils.isWebGLSupported() ? 'WebGL' : 'canvas');
 
   // create & config pixi app
@@ -31,7 +34,6 @@ function InitPixi() {
   view = app.view;
   renderer = app.renderer;
   renderer.backgroundColor = 0xDDEEDD;
-  renderer.autoResize = true;
   Resize();
 
   // add pixi canvas to HTML
@@ -42,9 +44,12 @@ function InitPixi() {
 // Resize
 //
 function Resize() {
-  $('#timeline').width(window.innerWidth);
-  $('#timeline').height(window.innerHeight);
-  renderer.resize($('#timeline').width(), $('#timeline').height())
+  $('#timeline').width($(window).innerWidth());
+  $('#timeline').height($(window).innerHeight());
+  renderer.view.width = $('#timeline').width()
+  renderer.view.height = $('#timeline').height()
+  renderer.resize(view.width, view.height)
+  console.log(`resize to (${renderer.width}px, ${renderer.height}px)`);
 }
 
 //

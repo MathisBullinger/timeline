@@ -64,13 +64,13 @@ var timeline = {
       graphic.drawCircle(
         (date.year+10000) / (this._max.year + 10000) * view.width,
         this._y * view.height,
-        8);
+        $(window).innerWidth() < 800 ? 4 : 8);
       app.stage.addChild(graphic);
 
       // add text label
       this._points[this._points.length - 1]['_label'] = new PIXI.Text(name, new PIXI.TextStyle({
         fontFamily: "Arial",
-        fontSize: 14,
+        fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
       label.position.x = (date.year+10000) / (this._max.year + 10000) * view.width - 10;
@@ -193,7 +193,7 @@ function Debounce(callback, delay = 50) {
 ███████ ██   ████    ██    ██   ██    ██
 */
 
-$('#timeline').css('height', window.innerHeight);
+//$('#timeline').css('height', window.innerHeight);
 InitPixi();
 timeline.Create();
 
@@ -213,9 +213,3 @@ timeline.timepoints.add('Mayan started building structure with Long Count', new 
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
-
-//Resize();
-
-//timeline.Rescale();
-
-//timeline.timepoints.log();
