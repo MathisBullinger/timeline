@@ -42,6 +42,8 @@ function InitPixi() {
 // Resize
 //
 function Resize() {
+  $('#timeline').width(window.innerWidth);
+  $('#timeline').height(window.innerHeight);
   renderer.resize($('#timeline').width(), $('#timeline').height())
 }
 

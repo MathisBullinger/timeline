@@ -21,12 +21,10 @@ var timeline = {
       app.stage.removeChild(this.line._graphic);
     this.line._graphic = new Graphics();
     this.line._graphic.lineStyle(this.line._width, this.line._color, 1);
-    console.log(`move to 0, ${this.line._y * view.height}`);
     this.line._graphic.moveTo(0, this.line._y * view.height);
-    console.log(`move to ${view.width}, ${this.line._y * view.height}`);
     this.line._graphic.lineTo(view.width, this.line._y * view.height);
-
     app.stage.addChild(this.line._graphic);
+
     this.timepoints._y = this.line._y;
     this.timepoints._min = this.start;
     this.timepoints._max = this.end;
@@ -55,39 +53,44 @@ var timeline = {
 
   timepoints: {
     _points: [],
+
     add: function(name, date) {
       this._points.push(new chronos.Timepoint(name, date));
+
       // add bubble
       this._points[this._points.length - 1]['_graphic'] = new Graphics();
-      this._points[this._points.length - 1]['_graphic'].lineStyle(1, 0x000000, 1);
-      this._points[this._points.length - 1]['_graphic'].drawCircle(
-        (date.year+10000) / (this._max.year + 10000) * $('#timeline').width(),
-        this._y * $('#timeline').height(),
+      let graphic = this._points[this._points.length - 1]['_graphic'];
+      graphic.lineStyle(1, 0x000000, 1);
+      graphic.drawCircle(
+        (date.year+10000) / (this._max.year + 10000) * view.width,
+        this._y * view.height,
         8);
-      //graphic.x = 0;
-      app.stage.addChild(this._points[this._points.length - 1]['_graphic']);
+      app.stage.addChild(graphic);
+
       // add text label
       this._points[this._points.length - 1]['_label'] = new PIXI.Text(name, new PIXI.TextStyle({
         fontFamily: "Arial",
-        fontSize: 16,
+        fontSize: 14,
       }));
-      app.stage.addChild(this._points[this._points.length - 1]['_label']);
-      this._points[this._points.length - 1]['_label'].position.x = (date.year+10000) / (this._max.year + 10000) * $('#timeline').width() - 10;
-      this._points[this._points.length - 1]['_label'].position.y = this._y * $('#timeline').height() - 25;
-      this._points[this._points.length - 1]['_label'].rotation = -1.5;
+      let label = this._points[this._points.length - 1]['_label'];
+      label.position.x = (date.year+10000) / (this._max.year + 10000) * view.width - 10;
+      label.position.y = this._y * view.height - 25;
+      label.rotation = -1.5;
+      app.stage.addChild(label);
 
       // adjust manually for demo
       if (name == 'Founding of United Nations') {
-        this._points[this._points.length - 1]['_label'].anchor.set(1,1);
-        this._points[this._points.length - 1]['_label'].rotation = -1.5;
-        this._points[this._points.length - 1]['_label'].position.x += 14;
-        this._points[this._points.length - 1]['_label'].position.y += 40;
+        label.anchor.set(1,1);
+        label.rotation = -1.5;
+        label.position.x += 14;
+        label.position.y += 40;
       } else if (name == 'Apollo 11') {
-        this._points[this._points.length - 1]['_label'].position.x -= 5;
+        label.position.x -= 5;
       } else if (name == 'First Temple') {
-        this._points[this._points.length - 1]['_label'].position.x += 10;
+        label.position.x += 10;
       }
     },
+
     log: function() {
       for (let point of this._points) {
         console.log(`${point.date.gregorian.toString()} \u2014 ${point.name}`)
