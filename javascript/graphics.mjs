@@ -6,9 +6,11 @@
 ██      ██ ██   ██ ██     ███████    ██     ██████  ██      ██
 */
 
-export { InitPixi, LoadTextures, app, Graphics };
+export { InitPixi, LoadTextures, Resize, app, view, Graphics };
 
 var app;
+var renderer;
+var view;
 var Graphics = PIXI.Graphics;
 var path_images = 'data/img/';
 var sprites = {};
@@ -22,17 +24,25 @@ function InitPixi() {
   // create & config pixi app
   let container = $('#timeline');
   app = new PIXI.Application({
-    width: container.width(),
-    height: container.height(),
+    width: $('#timeline').width(),
+    height: $('#timeline').height(),
     antialias: true
   });
-  app.renderer.backgroundColor = 0xDDEEDD;
-  app.renderer.autoResize = true;
-  app.renderer.view.style.width = '100%';
-  app.renderer.view.style.height = '100%';
+  view = app.view;
+  renderer = app.renderer;
+  renderer.backgroundColor = 0xDDEEDD;
+  renderer.autoResize = true;
+  Resize();
 
   // add pixi canvas to HTML
   container.append(app.view);
+}
+
+//
+// Resize
+//
+function Resize() {
+  renderer.resize($('#timeline').width(), $('#timeline').height())
 }
 
 //

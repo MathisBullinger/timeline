@@ -1,7 +1,7 @@
 'use strict';
 
 import {chronos} from './chronos.mjs';
-import {InitPixi, LoadTextures, app, Graphics} from './graphics.mjs';
+import {InitPixi, LoadTextures, Resize, app, view, Graphics} from './graphics.mjs';
 
 /*
 ████████ ██ ███    ███ ███████ ██      ██ ███    ██ ███████
@@ -21,12 +21,30 @@ var timeline = {
       app.stage.removeChild(this.line._graphic);
     this.line._graphic = new Graphics();
     this.line._graphic.lineStyle(this.line._width, this.line._color, 1);
-    this.line._graphic.moveTo(0, this.line._y * $('#timeline').height());
-    this.line._graphic.lineTo($('#timeline').width(), this.line._y * $('#timeline').height());
+    console.log(`move to 0, ${this.line._y * view.height}`);
+    this.line._graphic.moveTo(0, this.line._y * view.height);
+    console.log(`move to ${view.width}, ${this.line._y * view.height}`);
+    this.line._graphic.lineTo(view.width, this.line._y * view.height);
+
     app.stage.addChild(this.line._graphic);
     this.timepoints._y = this.line._y;
     this.timepoints._min = this.start;
     this.timepoints._max = this.end;
+  },
+
+  Rescale: function() {
+    // line
+    this.Create();
+    // timepoints
+    for (let i = this.timepoints._points.length - 1; i >= 0; i--) {
+      // remove drawing
+      app.stage.removeChild(this.timepoints._points[i]._graphic);
+      app.stage.removeChild(this.timepoints._points[i]._label);
+      // remove point
+      let tmp_point = this.timepoints._points.splice(i, 1)[0];
+      // add point
+      this.timepoints.add(tmp_point.name, tmp_point.date);
+    }
   },
 
   //
@@ -40,36 +58,34 @@ var timeline = {
     add: function(name, date) {
       this._points.push(new chronos.Timepoint(name, date));
       // add bubble
-      let graphic = this._points[this._points.length - 1]['_graphic'];
-      graphic = new Graphics();
-      graphic.lineStyle(1, 0x000000, 1);
-      graphic.drawCircle(
+      this._points[this._points.length - 1]['_graphic'] = new Graphics();
+      this._points[this._points.length - 1]['_graphic'].lineStyle(1, 0x000000, 1);
+      this._points[this._points.length - 1]['_graphic'].drawCircle(
         (date.year+10000) / (this._max.year + 10000) * $('#timeline').width(),
         this._y * $('#timeline').height(),
         8);
       //graphic.x = 0;
-      app.stage.addChild(graphic);
+      app.stage.addChild(this._points[this._points.length - 1]['_graphic']);
       // add text label
-      let label = this._points[this._points.length - 1]['_label'];
-      label = new PIXI.Text(name, new PIXI.TextStyle({
+      this._points[this._points.length - 1]['_label'] = new PIXI.Text(name, new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: 16,
       }));
-      app.stage.addChild(label);
-      label.position.x = (date.year+10000) / (this._max.year + 10000) * $('#timeline').width() - 10;
-      label.position.y = this._y * $('#timeline').height() - 25;
-      label.rotation = -1.5;
+      app.stage.addChild(this._points[this._points.length - 1]['_label']);
+      this._points[this._points.length - 1]['_label'].position.x = (date.year+10000) / (this._max.year + 10000) * $('#timeline').width() - 10;
+      this._points[this._points.length - 1]['_label'].position.y = this._y * $('#timeline').height() - 25;
+      this._points[this._points.length - 1]['_label'].rotation = -1.5;
 
       // adjust manually for demo
       if (name == 'Founding of United Nations') {
-        label.anchor.set(1,1);
-        label.rotation = -1.5;
-        label.position.x += 14;
-        label.position.y += 40;
+        this._points[this._points.length - 1]['_label'].anchor.set(1,1);
+        this._points[this._points.length - 1]['_label'].rotation = -1.5;
+        this._points[this._points.length - 1]['_label'].position.x += 14;
+        this._points[this._points.length - 1]['_label'].position.y += 40;
       } else if (name == 'Apollo 11') {
-        label.position.x -= 5;
+        this._points[this._points.length - 1]['_label'].position.x -= 5;
       } else if (name == 'First Temple') {
-        label.position.x += 10;
+        this._points[this._points.length - 1]['_label'].position.x += 10;
       }
     },
     log: function() {
@@ -131,12 +147,19 @@ function Scroll(x, y) {}
 //
 // Window Resize
 //
+// $(window).resize(Debounce(_ => {
+//   $('#timeline').css('height', window.innerHeight);
+//   if (timeline) {
+//     //timeline.Create();
+//     //timeline.Rescale();
+//     Resize();
+//     console.log('resize');
+//   }
+// }, 100));
 $(window).resize(Debounce(_ => {
-  $('#timeline').css('height', window.innerHeight);
-  if (timeline)
-    timeline.Create();
-  }
-));
+  Resize();
+  timeline.Rescale();
+}));
 
 //
 // (Mouse) Wheel
@@ -146,21 +169,17 @@ document.body.addEventListener('wheel', e => Scroll(e.deltaX, e.deltaY), {passiv
 //
 // Debounce
 //
-function Debounce(func, wait = 50) {
-  var timeout;
-  return function() {
-    var context = this,
-      args = arguments;
-    var later = function() {
-      timeout = null;
-      func.apply(context, args);
-    };
-    var callNow = !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow)
-      func.apply(context, args);
-    };
+function Debounce(callback, delay = 50) {
+  let timer_id;
+  return function (...args) {
+    if (timer_id) {
+      clearTimeout(timer_id);
+    }
+    timer_id = setTimeout(() => {
+      callback(...args);
+      timer_id = null;
+    }, delay);
+  }
 }
 
 /*
@@ -192,4 +211,8 @@ timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
 
-timeline.timepoints.log();
+//Resize();
+
+//timeline.Rescale();
+
+//timeline.timepoints.log();
