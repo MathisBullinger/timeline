@@ -45,11 +45,29 @@ var timeline = {
     }
   },
 
+  click: function(x, y) {
+    if (!(y > this.y - this.event_radius && y < this.y + this.event_radius))
+      return undefined;
+    for (let point of this.timepoints._points) {
+      let px = point._graphic.position.x;
+      let pr = point._graphic.width / 2;
+      if (x >= px - pr && x <= px + pr)
+        return point;
+    }
+  },
+
   //
   // properties
   //
   start: new chronos.Date(-10000),
   end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
+
+  get y() {
+    return this.line._y * view.height;
+  },
+  get event_radius() {
+    return 15;
+  },
 
   timepoints: {
     _points: [],
@@ -61,10 +79,8 @@ var timeline = {
       this._points[this._points.length - 1]['_graphic'] = new Graphics();
       let graphic = this._points[this._points.length - 1]['_graphic'];
       graphic.lineStyle(1, 0x000000, 1);
-      graphic.drawCircle(
-        (date.year+10000) / (this._max.year + 10000) * view.width,
-        this._y * view.height,
-        $(window).innerWidth() < 800 ? 4 : 8);
+      graphic.drawCircle(0, 0, $(window).innerWidth() < 800 ? 4 : 8);
+      graphic.position.set((date.year+10000) / (this._max.year + 10000) * view.width, this._y * view.height);
       app.stage.addChild(graphic);
 
       // add text label
@@ -145,20 +161,21 @@ var timeline = {
 //
 // Handle Scroll
 //
-function Scroll(x, y) {}
+function HandleScroll(x, y) {}
+
+//
+// Handle Click
+//
+function HandleClick(x, y) {
+  let hit = timeline.click(x, y);
+  if (hit) {
+    console.log(`clicked on ${hit.date.gregorian.toString()} - "${hit.name}"`);
+  }
+}
 
 //
 // Window Resize
 //
-// $(window).resize(Debounce(_ => {
-//   $('#timeline').css('height', window.innerHeight);
-//   if (timeline) {
-//     //timeline.Create();
-//     //timeline.Rescale();
-//     Resize();
-//     console.log('resize');
-//   }
-// }, 100));
 $(window).resize(Debounce(_ => {
   Resize();
   timeline.Rescale();
@@ -167,7 +184,12 @@ $(window).resize(Debounce(_ => {
 //
 // (Mouse) Wheel
 //
-document.body.addEventListener('wheel', e => Scroll(e.deltaX, e.deltaY), {passive: true});
+document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY), {passive: true});
+
+//
+// Click
+//
+$('#timeline').click(e => HandleClick(e.clientX, e.clientY));
 
 //
 // Debounce
@@ -193,12 +215,11 @@ function Debounce(callback, delay = 50) {
 ███████ ██   ████    ██    ██   ██    ██
 */
 
-//$('#timeline').css('height', window.innerHeight);
 InitPixi();
 timeline.Create();
 
 (today => console.log(`\n  ${ '\u{1F4C5} \u{1F5D3} '.repeat(7)}\u{1F4C5}\n\nToday is the ${today.gregorian.toString()} - that's the ${today.holocene.toString()} in the Holocene calendar.\n
-%c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796`, 'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
+%c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796\n`, 'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 
 timeline.timepoints.add('First Temple', new chronos.Date(-10000));
 timeline.timepoints.add('Chinchorro', new chronos.Date(-7000));
