@@ -54,8 +54,20 @@ var timeline = {
       this._marker_end.anchor.x = 1;
       app.stage.addChild(this._marker_end);
     }
-    this._marker_start.text = this._start.gregorian.toString();
-    this._marker_end.text = this._end.gregorian.toString();
+    let mark_start = new chronos.Date(this._start.year);
+    let mark_end = new chronos.Date(this._end.year);
+    // round to century if timescale > 3000
+    if (this._end.holocene.year - this._start.holocene.year >= 2000) {
+      mark_start = new chronos.Date(Math.floor(mark_start.year / 100) * 100);
+      mark_end = new chronos.Date(Math.floor(mark_end.year / 100) * 100);
+    }
+    // round to decade if timescale > 500
+    if (this._end.holocene.year - this._start.holocene.year >= 500) {
+      mark_start = new chronos.Date(Math.floor(mark_start.year / 10) * 10);
+      mark_end = new chronos.Date(Math.floor(mark_end.year / 10) * 10);
+    }
+    this._marker_start.text = mark_start.gregorian.toString();
+    this._marker_end.text = mark_end.gregorian.toString();
 
   },
 
@@ -94,11 +106,9 @@ var timeline = {
 
   set start(value) {
     this._start = value;
-    //this.Rescale();
   },
   set end(value) {
     this._end = value;
-    //this.Rescale();
   },
   get start() { return this._start; },
   get end() { return this._end; },
