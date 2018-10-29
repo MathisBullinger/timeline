@@ -95,15 +95,14 @@ var timeline = {
   },
 
   //
-  // Click
+  // Collides
   //
-  click: function(x, y) {
-    if (!(y > this.y - this.event_radius && y < this.y + this.event_radius))
-      return undefined;
+  collides: function(x, y) {
     for (let point of this.timepoints._points) {
       let px = point._graphic.position.x;
+      let py = point._graphic.position.y;
       let pr = point._graphic.width / 2;
-      if (x >= px - pr && x <= px + pr)
+      if (x >= px - pr && x <= px + pr && y >= py - pr && y <= py + pr)
         return point;
     }
   },
@@ -177,22 +176,13 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
-      label.position.x = pos_x - 10;
-      label.position.y = this._y * can_height() - 25;
-      label.rotation = -1.5;
+      label.position.x = pos_x;
+      label.position.y = this._y * can_height() - 50;
+      label.anchor.x = 0.5;
+      label.visible = false;
+      if (label.position.x - label.width / 2 < 0) label.anchor.x = 0;
+      else if (label.position.x + label.width / 2 > can_width()) label.anchor.x = 1;
       app.stage.addChild(label);
-
-      // adjust manually for demo
-      if (name == 'Founding of United Nations') {
-        label.anchor.set(1,1);
-        label.rotation = -1.5;
-        label.position.x += 14;
-        label.position.y += 40;
-      } else if (name == 'Apollo 11') {
-        label.position.x -= 5;
-      } else if (name == 'First Temple') {
-        label.position.x += 10;
-      }
     },
 
     log: function() {
@@ -297,7 +287,20 @@ function HandleScroll(x, y, pos_x) {
 // Handle Mouse Move
 //
 var mouse_pos_last = -1
-function HandleMousemove(mouse_x) {
+function HandleMousemove(mouse_x, mouse_y) {
+  // mouse over timepoint
+  //
+  let hit = timeline.collides(mouse_x, mouse_y);
+  for (let point of timeline.timepoints._points) {
+    // if (point == hit)
+    //   point._label.visible
+    point._label.visible = point == hit ? true : false;
+  }
+  // if (hit) {
+  //   hit._label.visible = true;
+  // }
+  // scroll timeline
+  //
   if (!mousedown) return;
   if (mouse_pos_last == -1) mouse_pos_last = mouse_x;
   let delta_mouse = mouse_x - mouse_pos_last;
@@ -310,7 +313,7 @@ function HandleMousemove(mouse_x) {
 // Handle Click
 //
 function HandleClick(x, y) {
-  let hit = timeline.click(x, y);
+  let hit = timeline.collides(x, y);
   if (hit) {
     console.log(`clicked on ${hit.date.gregorian.toString()} - "${hit.name}"`);
   }
@@ -345,7 +348,7 @@ $('#timeline').click(e => HandleClick(e.clientX, e.clientY));
 var mousedown = false;
 $('#timeline').mousedown(_ => mousedown = true);
 $('#timeline').mouseup(_ => {mousedown = false; mouse_pos_last = -1;});
-$('#timeline').mousemove(e => HandleMousemove(e.clientX));
+$('#timeline').mousemove(e => HandleMousemove(e.clientX, e.clientY));
 
 //
 // Debounce
@@ -403,5 +406,3 @@ timeline.timepoints.add('Mayan started building structure with Long Count', new 
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
-
-//timeline.end = new chronos.Date(1500);
