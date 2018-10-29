@@ -185,14 +185,32 @@ var timeline = {
 function HandleScroll(x, y) {
   let mode = Math.abs(x) > Math.abs(y) ? 'scroll' : 'zoom';
   if (mode == 'zoom') {
-    timeline.start = new chronos.Date( timeline.start.year - y * 5 );
-    timeline.end = new chronos.Date( timeline.end.year + y * 5 );
-    timeline.Rescale();
+
+    let years_zoom = (timeline.end.holocene.year - timeline.start.holocene.year) / 100 * y;
+    let start_new = new chronos.Date( timeline.start.year - years_zoom / 2 );
+    let end_new = new chronos.Date( timeline.end.year + years_zoom / 2 );
+    if (start_new.holocene.year < 0) start_new = new chronos.Date(-10000);
+    if (end_new.holocene.year > 12018) end_new = new chronos.Date(2018);
+    timeline.start = start_new;
+    timeline.end = end_new;
+
   } else {
-    timeline.start = new chronos.Date( timeline.start.year + x * 10 );
-    timeline.end = new chronos.Date( timeline.end.year + x * 10 );
-    timeline.Rescale();
+    let years_scroll = (timeline.end.holocene.year - timeline.start.holocene.year) / 500 * x;
+    let start_new = new chronos.Date( timeline.start.year + years_scroll );
+    let end_new = new chronos.Date( timeline.end.year + years_scroll );
+    if (end_new.holocene.year > 12018) {
+      let delta_end = 12018 - timeline.end.holocene.year;
+      end_new = new chronos.Date(2018);
+      start_new = new chronos.Date(timeline.start.year + delta_end);
+    } else if (start_new.holocene.year < 0) {
+      let delta_start = 0 - timeline.start.holocene.year;
+      start_new = new chronos.Date(-10000);
+      end_new = new chronos.Date(timeline.end.year + delta_start);
+    }
+    timeline.start = start_new;
+    timeline.end = end_new;
   }
+  timeline.Rescale();
 }
 
 //
