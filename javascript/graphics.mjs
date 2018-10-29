@@ -39,7 +39,7 @@ function InitPixi() {
   });
   view = app.view;
   renderer = app.renderer;
-  renderer.backgroundColor = 0xDDEEED;
+  renderer.backgroundColor = 0xFFFFFF;
 
   // add pixi canvas to HTML
   container.append(app.view);

@@ -48,14 +48,14 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 7 : 12,
         fill: 'gray'
       }));
-      this._marker_start.position.set(0, this.line._y * can_height() + 10);
+      this._marker_start.position.set(5, this.line._y * can_height() + 50);
       app.stage.addChild(this._marker_start);
       this._marker_end = new PIXI.Text('', new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: $(window).innerWidth() < 580 ? 7 : 12,
         fill: 'gray'
       }));
-      this._marker_end.position.set(can_width(), this.line._y * can_height() + 10);
+      this._marker_end.position.set(can_width() - 5, this.line._y * can_height() + 50);
       this._marker_end.anchor.x = 1;
       app.stage.addChild(this._marker_end);
     }
@@ -145,20 +145,20 @@ var timeline = {
       this._points[this._points.length - 1]['_graphic'] = new Graphics();
       let graphic = this._points[this._points.length - 1]['_graphic'];
       graphic.lineStyle(1, 0x000000, 1);
-      graphic.beginFill(0xDDEEED);
+      graphic.beginFill(0xFFFFFF);
       graphic.drawCircle(0, 0, this.rad_min);
       graphic.endFill();
       let pos_x = parseFloat((date.holocene.year - this._min.holocene.year)) / (this._max.holocene.year - this._min.holocene.year) * can_width();
       graphic.position.set(pos_x, this._y * can_height());
 
       //
-      // check collision
+      // adjust if collision
       for (let point of this._points) {
         if (point.name == name) continue;
         if (point._graphic.position.y != this._y * can_height()) continue;
         let dist = pos_x > point._graphic.position.x ? pos_x - point._graphic.position.x : point._graphic.position.x - pos_x;
         if (dist < this.rad_min * 2) {
-          let off_y = this.rad_min + 3;
+          let off_y = this.rad_min - dist / 2 + 5;
           if (point._graphic.position.x < graphic.position.x) {
             point._graphic.position.y -= off_y;
             graphic.position.y += off_y;
@@ -258,17 +258,23 @@ var timeline = {
 function HandleScroll(x, y, pos_x) {
   let mode = Math.abs(x) > Math.abs(y) ? 'scroll' : 'zoom';
   if (mode == 'zoom') {
-
+    // zoom
     let zoom_target = pos_x / can_width();
     let years_zoom = (timeline.end.holocene.year - timeline.start.holocene.year) / 200 * y;
     let start_new = new chronos.Date( (timeline.start.year - years_zoom * (zoom_target)) );
     let end_new = new chronos.Date( timeline.end.year + years_zoom * (1 - zoom_target) );
+    // max zoom
+    let max_zoom = 1000;
+    if (end_new.holocene.year - start_new.holocene.year <= max_zoom) {
+      if (timeline.start.holocene.year - timeline.end.holocene.year <= max_zoom) return;
+      start_new = new chronos.Date(end_new.year - max_zoom - 0.01);
+    };
     if (start_new.holocene.year < 0) start_new = new chronos.Date(-10000);
     if (end_new.holocene.year > 12018) end_new = new chronos.Date(2018);
     timeline.start = start_new;
     timeline.end = end_new;
-
   } else {
+    // scroll
     let years_scroll = (timeline.end.holocene.year - timeline.start.holocene.year) / 500 * x;
     let start_new = new chronos.Date( timeline.start.year + years_scroll );
     let end_new = new chronos.Date( timeline.end.year + years_scroll );
