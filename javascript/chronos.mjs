@@ -28,6 +28,9 @@ class _Date {
       toString() {
         return `${this._date._toStringDayMonth()} ${this._date._year<1200 ? this.year : this.year.split(' ')[0] }`;
       }
+      toStringBCAD() {
+        return `${this._date._toStringDayMonth()} ${this.year}`;
+      }
     } (this._year > 0 ? Math.round(this._year) + ' AD' : Math.round(this._year * -1) + ' BC');
 
     //
@@ -45,6 +48,17 @@ class _Date {
 
     this.gregorian._date = this;
     this.holocene._date = this;
+  }
+
+  // round
+  roundToYear() {
+    return new _Date(this.year);
+  }
+  roundToDecade() {
+    return new _Date( Math.floor(this.year / 10) * 10 )
+  }
+  roundToCentury() {
+    return new _Date( Math.floor(this.year / 100) * 100 )
   }
 
   // to string (day & month)

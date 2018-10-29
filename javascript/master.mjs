@@ -36,7 +36,7 @@ var timeline = {
     this.timepoints._min = this._start;
     this.timepoints._max = this._end;
 
-    // start date marker
+    // start & end date marker
     if (!this._marker_start) {
       this._marker_start = new PIXI.Text('', new PIXI.TextStyle({
         fontFamily: "Arial",
@@ -54,20 +54,20 @@ var timeline = {
       this._marker_end.anchor.x = 1;
       app.stage.addChild(this._marker_end);
     }
-    let mark_start = new chronos.Date(this._start.year);
-    let mark_end = new chronos.Date(this._end.year);
+    let mark_start = this._start.roundToYear();
+    let mark_end = this._end.roundToYear();
     // round to century if timescale > 3000
     if (this._end.holocene.year - this._start.holocene.year >= 2000) {
-      mark_start = new chronos.Date(Math.floor(mark_start.year / 100) * 100);
-      mark_end = new chronos.Date(Math.floor(mark_end.year / 100) * 100);
+      mark_start = mark_start.roundToCentury();
+      mark_end = mark_end.roundToCentury();
     }
     // round to decade if timescale > 500
     if (this._end.holocene.year - this._start.holocene.year >= 500) {
-      mark_start = new chronos.Date(Math.floor(mark_start.year / 10) * 10);
-      mark_end = new chronos.Date(Math.floor(mark_end.year / 10) * 10);
+      mark_start = mark_start.roundToDecade();
+      mark_end = mark_end.roundToDecade();
     }
-    this._marker_start.text = mark_start.gregorian.toString();
-    this._marker_end.text = mark_end.gregorian.toString();
+    this._marker_start.text = mark_start.gregorian.toStringBCAD();
+    this._marker_end.text = mark_end.gregorian.toStringBCAD();
 
   },
 
