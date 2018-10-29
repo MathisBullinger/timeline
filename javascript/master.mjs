@@ -24,6 +24,8 @@ var timeline = {
   // Create
   //
   Create: function() {
+    // line
+    //
     if (this.line._graphic)
       app.stage.removeChild(this.line._graphic);
     this.line._graphic = new Graphics();
@@ -32,11 +34,14 @@ var timeline = {
     this.line._graphic.lineTo(can_width(), this.line._y * can_height());
     app.stage.addChild(this.line._graphic);
 
+    // timepoints
+    //
     this.timepoints._y = this.line._y;
     this.timepoints._min = this._start;
     this.timepoints._max = this._end;
 
     // start & end date marker
+    //
     if (!this._marker_start) {
       this._marker_start = new PIXI.Text('', new PIXI.TextStyle({
         fontFamily: "Arial",
@@ -71,6 +76,9 @@ var timeline = {
 
   },
 
+  //
+  // Rescale
+  //
   Rescale: function() {
     // line
     this.Create();
@@ -86,6 +94,9 @@ var timeline = {
     }
   },
 
+  //
+  // Click
+  //
   click: function(x, y) {
     if (!(y > this.y - this.event_radius && y < this.y + this.event_radius))
       return undefined;
@@ -98,7 +109,7 @@ var timeline = {
   },
 
   //
-  // properties
+  // Properties
   //
   _start: new chronos.Date(-10000),
   _end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
@@ -120,6 +131,9 @@ var timeline = {
     return 15;
   },
 
+  //
+  // Timepoints
+  //
   timepoints: {
     _points: [],
 
@@ -127,12 +141,33 @@ var timeline = {
       this._points.push(new chronos.Timepoint(name, date));
 
       // add bubble
+      //
       this._points[this._points.length - 1]['_graphic'] = new Graphics();
       let graphic = this._points[this._points.length - 1]['_graphic'];
       graphic.lineStyle(1, 0x000000, 1);
-      graphic.drawCircle(0, 0, $(window).innerWidth() < 800 ? 4 : 8);
+      graphic.beginFill(0xDDEEED);
+      graphic.drawCircle(0, 0, this.rad_min);
+      graphic.endFill();
       let pos_x = parseFloat((date.holocene.year - this._min.holocene.year)) / (this._max.holocene.year - this._min.holocene.year) * can_width();
       graphic.position.set(pos_x, this._y * can_height());
+
+      //
+      // check collision
+      for (let point of this._points) {
+        if (point.name == name) continue;
+        if (point._graphic.position.y != this._y * can_height()) continue;
+        let dist = pos_x > point._graphic.position.x ? pos_x - point._graphic.position.x : point._graphic.position.x - pos_x;
+        if (dist < this.rad_min * 2) {
+          let off_y = this.rad_min + 3;
+          if (point._graphic.position.x < graphic.position.x) {
+            point._graphic.position.y -= off_y;
+            graphic.position.y += off_y;
+          } else {
+            graphic.position.y -= off_y;
+            point._graphic.position.y += off_y;
+          }
+        }
+      }
 
       app.stage.addChild(graphic);
 
@@ -142,7 +177,6 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
-      //label.cacheAsBitmap = true;
       label.position.x = pos_x - 10;
       label.position.y = this._y * can_height() - 25;
       label.rotation = -1.5;
@@ -168,9 +202,15 @@ var timeline = {
     },
     _y: undefined,
     _min: undefined,
-    _max: undefined
+    _max: undefined,
+    get rad_min() {
+      return window.innerHeight / 100;
+    }
   },
 
+  //
+  // Line
+  //
   line: {
     _graphic: undefined,
 
