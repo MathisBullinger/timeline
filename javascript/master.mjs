@@ -182,13 +182,14 @@ var timeline = {
 //
 // Handle Scroll & Zoom
 //
-function HandleScroll(x, y) {
+function HandleScroll(x, y, pos_x) {
   let mode = Math.abs(x) > Math.abs(y) ? 'scroll' : 'zoom';
   if (mode == 'zoom') {
 
-    let years_zoom = (timeline.end.holocene.year - timeline.start.holocene.year) / 100 * y;
-    let start_new = new chronos.Date( timeline.start.year - years_zoom / 2 );
-    let end_new = new chronos.Date( timeline.end.year + years_zoom / 2 );
+    let zoom_target = pos_x / can_width();
+    let years_zoom = (timeline.end.holocene.year - timeline.start.holocene.year) / 200 * y;
+    let start_new = new chronos.Date( (timeline.start.year - years_zoom * (zoom_target)) );
+    let end_new = new chronos.Date( timeline.end.year + years_zoom * (1 - zoom_target) );
     if (start_new.holocene.year < 0) start_new = new chronos.Date(-10000);
     if (end_new.holocene.year > 12018) end_new = new chronos.Date(2018);
     timeline.start = start_new;
@@ -252,7 +253,7 @@ $(window).resize(Debounce(_ => {
 //
 // (Mouse) Wheel
 //
-document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY), {passive: true});
+document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY, e.clientX), {passive: true});
 
 //
 // Click
