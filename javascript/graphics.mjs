@@ -27,7 +27,6 @@ function InitPixi() {
 
   settings = PIXI.settings;
   settings.RESOLUTION = 2;
-  console.log(settings);
 
   // create & config pixi app
   let container = $('#timeline');

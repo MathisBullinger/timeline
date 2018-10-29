@@ -214,6 +214,19 @@ function HandleScroll(x, y) {
 }
 
 //
+// Handle Mouse Move
+//
+var mouse_pos_last = -1
+function HandleMousemove(mouse_x) {
+  if (!mousedown) return;
+  if (mouse_pos_last == -1) mouse_pos_last = mouse_x;
+  let delta_mouse = mouse_x - mouse_pos_last;
+  mouse_pos_last = mouse_x;
+  if (delta_mouse == 0) return;
+  HandleScroll(-delta_mouse * 0.8, 0);
+}
+
+//
 // Handle Click
 //
 function HandleClick(x, y) {
@@ -240,6 +253,11 @@ document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY), {
 // Click
 //
 $('#timeline').click(e => HandleClick(e.clientX, e.clientY));
+
+var mousedown = false;
+$('#timeline').mousedown(_ => mousedown = true);
+$('#timeline').mouseup(_ => {mousedown = false; mouse_pos_last = -1;});
+$('#timeline').mousemove(e => HandleMousemove(e.clientX));
 
 //
 // Debounce
