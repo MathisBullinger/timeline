@@ -48,17 +48,17 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 7 : 12,
         fill: 'gray'
       }));
-      this._marker_start.position.set(5, this.line._y * can_height() + 50);
       app.stage.addChild(this._marker_start);
       this._marker_end = new PIXI.Text('', new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: $(window).innerWidth() < 580 ? 7 : 12,
         fill: 'gray'
       }));
-      this._marker_end.position.set(can_width() - 5, this.line._y * can_height() + 50);
       this._marker_end.anchor.x = 1;
       app.stage.addChild(this._marker_end);
     }
+    this._marker_start.position.set(5, this.line._y * can_height() + 50);
+    this._marker_end.position.set(can_width() - 5, this.line._y * can_height() + 50);
     let mark_start = this._start.roundToYear();
     let mark_end = this._end.roundToYear();
     // round to century if timescale > 3000
@@ -177,8 +177,8 @@ var timeline = {
       }));
       let label = this._points[this._points.length - 1]['_label'];
       label.position.x = pos_x;
-      label.position.y = this._y * can_height() - 50;
-      label.anchor.x = 0.5;
+      label.position.y = graphic.position.y + (50 * (graphic.position.y <= this._y * can_height() ? -1 : 1));
+      label.anchor.set(0.5);
       label.visible = false;
       if (label.position.x - label.width / 2 < 0) label.anchor.x = 0;
       else if (label.position.x + label.width / 2 > can_width()) label.anchor.x = 1;
@@ -194,7 +194,7 @@ var timeline = {
     _min: undefined,
     _max: undefined,
     get rad_min() {
-      return window.innerHeight / 100;
+      return window.innerHeight / 50;
     }
   },
 
