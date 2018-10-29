@@ -190,7 +190,7 @@ var timeline = {
       //
       this._points[this._points.length - 1]['_label_date'] = new PIXI.Text(date.gregorian.toString(), new PIXI.TextStyle({
         fontFamily: "Arial",
-        fontSize: 12
+        fontSize: 11
       }));
       let label_date = this._points[this._points.length - 1]['_label_date'];
       label_date.position.x = pos_x;
@@ -200,6 +200,16 @@ var timeline = {
       label_date.alpha = 0;
       if (label_date.position.x - label_date.width / 2 < 0) label_date.anchor.x = 0;
       else if (label_date.position.x + label_date.width / 2 > can_width()) label_date.anchor.x = 1;
+      // hide label if collides
+      for (let point of this._points) {
+        if (point.name == name) continue;
+        if (!point._label_date.visible) continue;
+        let l1 = label_date;
+        let l2 = point._label_date;
+        if (l1.position.x - l1.width / 2 < l2.position.x + l2.width / 2 && l1.position.x + l1.width / 2 > l2.position.x + l2.width / 2 ||
+        l1.position.x + l1.width / 2 < l2.position.x - l2.width / 2 && l1.position.x - l1.width / 2 < l2.position.x + l2.width / 2)
+          label_date.visible = false;
+      }
       app.stage.addChild(label_date);
     },
 
