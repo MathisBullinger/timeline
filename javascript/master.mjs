@@ -66,8 +66,8 @@ var timeline = {
       mark_start = mark_start.roundToCentury();
       mark_end = mark_end.roundToCentury();
     }
-    // round to decade if timescale > 500
-    if (this._end.holocene.year - this._start.holocene.year >= 500) {
+    // round to decade if timescale > 700
+    if (this._end.holocene.year - this._start.holocene.year >= 700) {
       mark_start = mark_start.roundToDecade();
       mark_end = mark_end.roundToDecade();
     }
@@ -87,6 +87,7 @@ var timeline = {
       // remove drawing
       app.stage.removeChild(this.timepoints._points[i]._graphic);
       app.stage.removeChild(this.timepoints._points[i]._label);
+      app.stage.removeChild(this.timepoints._points[i]._label_date);
       // remove point
       let tmp_point = this.timepoints._points.splice(i, 1)[0];
       // add point
@@ -150,8 +151,8 @@ var timeline = {
       let pos_x = parseFloat((date.holocene.year - this._min.holocene.year)) / (this._max.holocene.year - this._min.holocene.year) * can_width();
       graphic.position.set(pos_x, this._y * can_height());
 
-      //
       // adjust if collision
+      //
       for (let point of this._points) {
         if (point.name == name) continue;
         if (point._graphic.position.y != this._y * can_height()) continue;
@@ -171,6 +172,7 @@ var timeline = {
       app.stage.addChild(graphic);
 
       // add text label
+      //
       this._points[this._points.length - 1]['_label'] = new PIXI.Text(name, new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
@@ -183,6 +185,22 @@ var timeline = {
       if (label.position.x - label.width / 2 < 0) label.anchor.x = 0;
       else if (label.position.x + label.width / 2 > can_width()) label.anchor.x = 1;
       app.stage.addChild(label);
+
+      // add date label
+      //
+      this._points[this._points.length - 1]['_label_date'] = new PIXI.Text(date.gregorian.toString(), new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 12
+      }));
+      let label_date = this._points[this._points.length - 1]['_label_date'];
+      label_date.position.x = pos_x;
+      label_date.position.y = graphic.position.y + 30;
+      label_date.anchor.set(0.5);
+      label_date.visible = true;
+      label_date.alpha = 0;
+      if (label_date.position.x - label_date.width / 2 < 0) label_date.anchor.x = 0;
+      else if (label_date.position.x + label_date.width / 2 > can_width()) label_date.anchor.x = 1;
+      app.stage.addChild(label_date);
     },
 
     log: function() {
@@ -254,7 +272,7 @@ function HandleScroll(x, y, pos_x) {
     let start_new = new chronos.Date( (timeline.start.year - years_zoom * (zoom_target)) );
     let end_new = new chronos.Date( timeline.end.year + years_zoom * (1 - zoom_target) );
     // max zoom
-    let max_zoom = 1000;
+    let max_zoom = 500;
     if (end_new.holocene.year - start_new.holocene.year <= max_zoom) {
       if (timeline.start.holocene.year - timeline.end.holocene.year <= max_zoom) return;
       start_new = new chronos.Date(end_new.year - max_zoom - 0.01);
@@ -292,13 +310,15 @@ function HandleMousemove(mouse_x, mouse_y) {
   //
   let hit = timeline.collides(mouse_x, mouse_y);
   for (let point of timeline.timepoints._points) {
-    // if (point == hit)
-    //   point._label.visible
     point._label.visible = point == hit ? true : false;
+
+    // date visibility
+    let pos = point._graphic.position;
+    let dist_x = mouse_x > pos.x ? mouse_x - pos.x : pos.x - mouse_x;
+    let dist = Math.sqrt( Math.pow(mouse_x - pos.x, 2) + Math.pow(mouse_y - pos.y, 2) );
+    point._label_date.alpha = dist < 150 ? 1.5 - 1 / (100 / dist) : 0;
   }
-  // if (hit) {
-  //   hit._label.visible = true;
-  // }
+
   // scroll timeline
   //
   if (!mousedown) return;
