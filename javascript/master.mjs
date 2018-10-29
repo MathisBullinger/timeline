@@ -33,8 +33,8 @@ var timeline = {
     app.stage.addChild(this.line._graphic);
 
     this.timepoints._y = this.line._y;
-    this.timepoints._min = this.start;
-    this.timepoints._max = this.end;
+    this.timepoints._min = this._start;
+    this.timepoints._max = this._end;
   },
 
   Rescale: function() {
@@ -66,8 +66,19 @@ var timeline = {
   //
   // properties
   //
-  start: new chronos.Date(-10000),
-  end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
+  _start: new chronos.Date(-10000),
+  _end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
+
+  set start(value) {
+    this._start = value;
+    //this.Rescale();
+  },
+  set end(value) {
+    this._end = value;
+    //this.Rescale();
+  },
+  get start() { return this._start; },
+  get end() { return this._end; },
 
   get y() {
     return this.line._y * can_height();
@@ -87,7 +98,9 @@ var timeline = {
       let graphic = this._points[this._points.length - 1]['_graphic'];
       graphic.lineStyle(1, 0x000000, 1);
       graphic.drawCircle(0, 0, $(window).innerWidth() < 800 ? 4 : 8);
-      graphic.position.set((date.year+10000) / (this._max.year + 10000) * can_width(), this._y * can_height());
+      let pos_x = parseFloat((date.holocene.year - this._min.holocene.year)) / (this._max.holocene.year - this._min.holocene.year) * can_width();
+      graphic.position.set(pos_x, this._y * can_height());
+
       app.stage.addChild(graphic);
 
       // add text label
@@ -96,7 +109,8 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
-      label.position.x = (date.year+10000) / (this._max.year + 10000) * can_width() - 10;
+      label.cacheAsBitmap = true;
+      label.position.x = pos_x - 10;
       label.position.y = this._y * can_height() - 25;
       label.rotation = -1.5;
       app.stage.addChild(label);
@@ -127,7 +141,7 @@ var timeline = {
   line: {
     _graphic: undefined,
 
-    _y: 0.7,
+    _y: 1 / 1.61,
     get y() {
       return this._y;
     },
@@ -166,9 +180,20 @@ var timeline = {
 */
 
 //
-// Handle Scroll
+// Handle Scroll & Zoom
 //
-function HandleScroll(x, y) {}
+function HandleScroll(x, y) {
+  let mode = Math.abs(x) > Math.abs(y) ? 'scroll' : 'zoom';
+  if (mode == 'zoom') {
+    timeline.start = new chronos.Date( timeline.start.year - y * 5 );
+    timeline.end = new chronos.Date( timeline.end.year + y * 5 );
+    timeline.Rescale();
+  } else {
+    timeline.start = new chronos.Date( timeline.start.year + x * 10 );
+    timeline.end = new chronos.Date( timeline.end.year + x * 10 );
+    timeline.Rescale();
+  }
+}
 
 //
 // Handle Click
@@ -222,6 +247,9 @@ function Debounce(callback, delay = 50) {
 ███████ ██   ████    ██    ██   ██    ██
 */
 
+//
+// Display mobile warning
+//
 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
   $('body').append(`
     <div class="phoneblock">
@@ -251,3 +279,5 @@ timeline.timepoints.add('Mayan started building structure with Long Count', new 
 timeline.timepoints.add('Colonization of the Americas', new chronos.Date(1492));
 timeline.timepoints.add('Founding of United Nations', new chronos.Date(1945));
 timeline.timepoints.add('Apollo 11', new chronos.Date(1969));
+
+//timeline.end = new chronos.Date(1500);
