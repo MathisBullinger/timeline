@@ -28,7 +28,7 @@ class _Date {
       toString() {
         return `${this._date._toStringDayMonth()} ${this._date._year<1200 ? this.year : this.year.split(' ')[0] }`;
       }
-    } (this._year > 0 ? this._year + ' AD' : this._year * -1 + ' BC');
+    } (this._year > 0 ? Math.round(this._year) + ' AD' : Math.round(this._year * -1) + ' BC');
 
     //
     // Holocene

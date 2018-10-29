@@ -35,6 +35,28 @@ var timeline = {
     this.timepoints._y = this.line._y;
     this.timepoints._min = this._start;
     this.timepoints._max = this._end;
+
+    // start date marker
+    if (!this._marker_start) {
+      this._marker_start = new PIXI.Text('', new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: $(window).innerWidth() < 580 ? 7 : 12,
+        fill: 'gray'
+      }));
+      this._marker_start.position.set(0, this.line._y * can_height() + 10);
+      app.stage.addChild(this._marker_start);
+      this._marker_end = new PIXI.Text('', new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: $(window).innerWidth() < 580 ? 7 : 12,
+        fill: 'gray'
+      }));
+      this._marker_end.position.set(can_width(), this.line._y * can_height() + 10);
+      this._marker_end.anchor.x = 1;
+      app.stage.addChild(this._marker_end);
+    }
+    this._marker_start.text = this._start.gregorian.toString();
+    this._marker_end.text = this._end.gregorian.toString();
+
   },
 
   Rescale: function() {
@@ -68,6 +90,7 @@ var timeline = {
   //
   _start: new chronos.Date(-10000),
   _end: new chronos.Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()),
+  _marker_start: undefined,
 
   set start(value) {
     this._start = value;
@@ -109,7 +132,7 @@ var timeline = {
         fontSize: $(window).innerWidth() < 580 ? 10 : 14
       }));
       let label = this._points[this._points.length - 1]['_label'];
-      label.cacheAsBitmap = true;
+      //label.cacheAsBitmap = true;
       label.position.x = pos_x - 10;
       label.position.y = this._y * can_height() - 25;
       label.rotation = -1.5;
