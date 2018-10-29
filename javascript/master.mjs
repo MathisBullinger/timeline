@@ -237,6 +237,11 @@ function HandleClick(x, y) {
 }
 
 //
+// disable context menu
+//
+$('#timeline').on('contextmenu', _ => false);
+
+//
 // Window Resize
 //
 $(window).resize(Debounce(_ => {
@@ -254,6 +259,9 @@ document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY), {
 //
 $('#timeline').click(e => HandleClick(e.clientX, e.clientY));
 
+//
+// detect mouse drag
+//
 var mousedown = false;
 $('#timeline').mousedown(_ => mousedown = true);
 $('#timeline').mouseup(_ => {mousedown = false; mouse_pos_last = -1;});
