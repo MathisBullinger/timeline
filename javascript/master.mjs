@@ -206,9 +206,13 @@ var timeline = {
         if (!point._label_date.visible) continue;
         let l1 = label_date;
         let l2 = point._label_date;
-        if (l1.position.x - l1.width / 2 < l2.position.x + l2.width / 2 && l1.position.x + l1.width / 2 > l2.position.x + l2.width / 2 ||
-        l1.position.x + l1.width / 2 < l2.position.x - l2.width / 2 && l1.position.x - l1.width / 2 < l2.position.x + l2.width / 2)
-          label_date.visible = false;
+        let p1 = l1.position;
+        let p2 = l2.position;
+        // check collision
+        if ((
+          (b1, b2) => b2.contains(b1.x - b1.width / 2, b2.y) != b2.contains(b1.x + b1.width / 2, b2.y)
+        )(l1.getBounds(), l2.getBounds()))
+          l1.visible = false;
       }
       app.stage.addChild(label_date);
     },
@@ -322,7 +326,7 @@ function HandleMousemove(mouse_x, mouse_y) {
   for (let point of timeline.timepoints._points) {
     point._label.visible = point == hit ? true : false;
 
-    // date visibility
+    // date opacity depending on cursor distance
     let pos = point._graphic.position;
     let dist_x = mouse_x > pos.x ? mouse_x - pos.x : pos.x - mouse_x;
     let dist = Math.sqrt( Math.pow(mouse_x - pos.x, 2) + Math.pow(mouse_y - pos.y, 2) );
