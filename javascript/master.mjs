@@ -46,7 +46,7 @@ SayHello();
 let tl = new Timeline();
 interaction.start(tl);
 
-LoadJSON('../data/events.json', data => {
+LoadJSON('data/events.json', data => {
   let events = JSON.parse(data);
   for (let event of events) {
     let name = event.name;

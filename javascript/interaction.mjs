@@ -44,7 +44,7 @@ const interaction = {
       mousepos_last = e.clientX;
       if (delta_mouse != 0)
         timeline.Scroll(-delta_mouse);
-    }));
+    }, 16));
 
     var mousedown = false;
     $('#timeline').mousedown(_ => mousedown = true);
