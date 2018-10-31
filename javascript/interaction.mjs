@@ -48,11 +48,6 @@ const interaction = {
         timeline.Scroll(-delta_mouse);
     }, 16));
 
-    //
-    $('#timeline').click(Throttle(e => {
-      timeline.HandleClick(new Point(e.clientX, e.clientY));
-    }, 16));
-
     var mousedown = false;
     $('#timeline').mousedown(_ => mousedown = true);
     $('#timeline').mouseup(_ => {mousedown = false; mousepos_last = -1;});
