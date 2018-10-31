@@ -6,10 +6,25 @@
     <title>Timeline</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/min/master.css">
+    <style>
+      #infobox {
+        position: fixed;
+        display: none;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        background-color: #f7f7f7;
+        padding: 30px;
+        z-index: 999;
+      }
+    </style>
   </head>
   <body>
 
     <div id="timeline"></div>
+    <div id="infobox">
+      <h1>Default</h1>
+      <p>text</p>
+    </div>
 
     <script src="javascript/util/jquery.min.js" charset="utf-8"></script>
     <script src="javascript/util/pixi.js" charset="utf-8"></script>

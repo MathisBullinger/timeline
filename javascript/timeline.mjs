@@ -115,6 +115,43 @@ class Timeline {
     return label;
   }
 
+  HandleClick(mousepos) {
+    let hit = false;
+    for (let event of this._events) {
+      const dx = Math.abs(mousepos.x - event._bubble.position.x);
+      // set date visibility
+      event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
+      const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
+      event._name_label.visible = dist <= event._bubble.width / 2 ? true : false;
+      if(dist <= event._bubble.width / 2 ? true : false) {
+        hit = true;
+        this.openInfoBox(event);
+      }
+    }
+    if(!hit) {
+      this.hideInfoBox();
+    }
+  }
+
+  openInfoBox(event) {
+    // set title
+    $("#infobox > h1").html(event.name);
+    $("#infobox > p").html("text");
+    let ePosX = event._bubble.position.x;
+    let ePosY = event._bubble.position.y;
+    let width = $("#infobox").width();
+    let height = $("#infobox").height();
+    let left = ePosX - (width / 2);
+    let top = ePosY - (height / 2);
+    $("#infobox").css({"left":left,"top":top});
+    // show infobox
+    $("#infobox").show();
+  }
+
+  hideInfoBox() {
+    $("#infobox").hide();
+  }
+
   //
   // Update date visibility on mouse move
   //

@@ -30,6 +30,8 @@ const interaction = {
       timeline.MouseMove(new Point(event.clientX, event.clientY));
     }, {passive: true});
 
+
+
     //
     // mouse move
     //
@@ -44,6 +46,11 @@ const interaction = {
       mousepos_last = e.clientX;
       if (delta_mouse != 0)
         timeline.Scroll(-delta_mouse);
+    }, 16));
+
+    //
+    $('#timeline').click(Throttle(e => {
+      timeline.HandleClick(new Point(e.clientX, e.clientY));
     }, 16));
 
     var mousedown = false;
@@ -63,6 +70,13 @@ const interaction = {
       timeline.Resize();
     }));
 
+  }
+}
+
+function HandleClick(x, y) {
+  let hit = timeline.click(x, y);
+  if (hit) {
+    console.log(`clicked on ${hit.date.gregorian.toString()} - "${hit.name}"`);
   }
 }
 
