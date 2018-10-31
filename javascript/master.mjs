@@ -277,8 +277,9 @@ var timeline = {
 //
 // Handle Scroll & Zoom
 //
-function HandleScroll(x, y, pos_x) {
+function HandleScrollOld(x, y, pos_x) {
   let mode = Math.abs(x) > Math.abs(y) ? 'scroll' : 'zoom';
+
   if (mode == 'zoom') {
     // zoom
     let zoom_target = pos_x / can_width();
@@ -313,6 +314,45 @@ function HandleScroll(x, y, pos_x) {
     timeline.end = end_new;
   }
   timeline.Rescale();
+}
+function HandleScrollAndZoom(dx, dy, px) {
+  if (Math.abs(dy) > Math.abs(dx))
+    HandleZoom(dy, px);
+  else
+    HandleScroll(dx);
+  timeline.Rescale();
+}
+function HandleZoom(dy, px) {
+  let zoom_target = px / can_width();
+  let years_zoom = (timeline.end.holocene.year - timeline.start.holocene.year) / 200 * dy;
+  let start_new = new chronos.Date( (timeline.start.year - years_zoom * (zoom_target)) );
+  let end_new = new chronos.Date( timeline.end.year + years_zoom * (1 - zoom_target) );
+  // max zoom
+  let max_zoom = 500;
+  if (end_new.holocene.year - start_new.holocene.year <= max_zoom) {
+    if (timeline.start.holocene.year - timeline.end.holocene.year <= max_zoom) return;
+    start_new = new chronos.Date(end_new.year - max_zoom - 0.01);
+  };
+  if (start_new.holocene.year < 0) start_new = new chronos.Date(-10000);
+  if (end_new.holocene.year > 12018) end_new = new chronos.Date(2018);
+  timeline.start = start_new;
+  timeline.end = end_new;
+}
+function HandleScroll(dx) {
+  let years_scroll = (timeline.end.holocene.year - timeline.start.holocene.year) / 500 * dx;
+  let start_new = new chronos.Date( timeline.start.year + years_scroll );
+  let end_new = new chronos.Date( timeline.end.year + years_scroll );
+  if (end_new.holocene.year > 12018) {
+    let delta_end = 12018 - timeline.end.holocene.year;
+    end_new = new chronos.Date(2018);
+    start_new = new chronos.Date(timeline.start.year + delta_end);
+  } else if (start_new.holocene.year < 0) {
+    let delta_start = 0 - timeline.start.holocene.year;
+    start_new = new chronos.Date(-10000);
+    end_new = new chronos.Date(timeline.end.year + delta_start);
+  }
+  timeline.start = start_new;
+  timeline.end = end_new;
 }
 
 //
@@ -369,7 +409,10 @@ $(window).resize(Debounce(_ => {
 //
 // (Mouse) Wheel
 //
-document.body.addEventListener('wheel', e => HandleScroll(e.deltaX, e.deltaY, e.clientX), {passive: true});
+document.body.addEventListener('wheel',
+  // e => HandleScroll(e.deltaX, e.deltaY, e.clientX),
+  event => HandleScrollAndZoom(event.deltaX, event.deltaY, event.clientX),
+  {passive: true});
 
 //
 // Click
@@ -424,8 +467,10 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 InitPixi();
 timeline.Create();
 
-(today => console.log(`\n  ${ '\u{1F4C5} \u{1F5D3} '.repeat(7)}\u{1F4C5}\n\nToday is the ${today.gregorian.toString()} - that's the ${today.holocene.toString()} in the Holocene calendar.\n
-%c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796\n`, 'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
+(today => console.log(`\n  ${ '\u{1F4C5} \u{1F5D3} '.repeat(7)}\u{1F4C5}\n\nToday is the
+${today.gregorian.toString()} - that's the ${today.holocene.toString()} in the Holocene calendar.\n
+%c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796\n`,
+'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 
 timeline.timepoints.add('First Temple', new chronos.Date(-10000));
 timeline.timepoints.add('Chinchorro', new chronos.Date(-7000));

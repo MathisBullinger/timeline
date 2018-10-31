@@ -26,8 +26,10 @@ class _Date {
         this._date = undefined;
       }
       toString() {
+        // remove BC/AD after 1200
         return `${this._date._toStringDayMonth()} ${this._date._year<1200 ? this.year : this.year.split(' ')[0] }`;
       }
+      // force BC/AD indicator after date
       toStringBCAD() {
         return `${this._date._toStringDayMonth()} ${this.year}`;
       }
@@ -42,6 +44,7 @@ class _Date {
         this._date = undefined;
       }
       toString() {
+        // e.g. 12500 => '12,500'
         return `${this._date._toStringDayMonth()} ${this.year.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
       }
     } (this._year + 10000);
