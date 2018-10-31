@@ -5,17 +5,39 @@ import { InitPixi , LoadTextures, Resize, app, view, renderer, settings, Graphic
 import { Timeline } from  './timeline.mjs';
 import { interaction } from './interaction.mjs'
 
+MobileWarning();
+InitPixi();
+SayHello();
+
+let timeline = new Timeline();
+interaction.start(timeline);
+
+LoadJSON('data/events.json', data => {
+  let events = JSON.parse(data);
+  for (let event of events) {
+    let name = event.name;
+    let date = new chronos.Date(
+      event.date[0], // year
+      event.date.length >= 2 ? event.date[1] : 0, // month
+      event.date.length >= 3 ? event.date[2] : 0); // day
+    timeline.AddEvent(new chronos.Timepoint(name, date));
+  };
+  timeline.LogTimepoints();
+});
+
 //
 // Display mobile warning
 //
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-  $('body').append(`
-    <div class="phoneblock">
-      <p>This website doesn't support a mobile view yet.<p>
-      <button id="bt-mobile-show">Show me anyway!</button>
-    </div>
-  `);
-  $('#bt-mobile-show').click(_ => $('.phoneblock').css('display', 'none'));
+function MobileWarning() {
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    $('body').append(`
+      <div class="phoneblock">
+        <p>This website doesn't support a mobile view yet.<p>
+        <button id="bt-mobile-show">Show me anyway!</button>
+      </div>
+    `);
+    $('#bt-mobile-show').click(_ => $('.phoneblock').css('display', 'none'));
+  }
 }
 
 //
@@ -28,6 +50,9 @@ function SayHello() {
   'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 }
 
+//
+// Load JSON
+//
 function LoadJSON(file, callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
@@ -39,22 +64,3 @@ function LoadJSON(file, callback) {
   };
   xobj.send(null);
 }
-
-InitPixi();
-SayHello();
-
-let tl = new Timeline();
-interaction.start(tl);
-
-LoadJSON('data/events.json', data => {
-  let events = JSON.parse(data);
-  for (let event of events) {
-    let name = event.name;
-    let date = new chronos.Date(
-      event.date[0], // year
-      event.date.length >= 2 ? event.date[1] : 0, // month
-      event.date.length >= 3 ? event.date[2] : 0); // day
-    tl.AddEvent(new chronos.Timepoint(name, date));
-  };
-  tl.LogTimepoints();
-});

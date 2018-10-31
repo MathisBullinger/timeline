@@ -11,7 +11,7 @@ class Timeline {
 
     this.date_first = new chronos.Date(-10000);
     this.date_last = new chronos.Date(2018);
-    this._pos_y = 0.5;
+    this._pos_y = 1 / 1.618;
     this._events = [];
     this._line = new Graphics();
     this._max_zoom = 1000;
@@ -65,6 +65,7 @@ class Timeline {
     timepoint._date_label.text = timepoint.date.holocene.toString();
     timepoint._date_label.position = timepoint._bubble.position;
     timepoint._date_label.position.y += 30;
+    timepoint._date_label.alpha = 0;
 
     // set name label
     timepoint._name_label.text = timepoint.name;
@@ -118,14 +119,16 @@ class Timeline {
   // Update date visibility on mouse move
   //
   MouseMove(mousepos) {
-    // show name tag if mouse hover
     for (let event of this._events) {
-      // pre check to avoid sqrt
-      if (mousepos.x > event._bubble.position.x + event._bubble.width / 2 || mousepos.x < event._bubble.position.x - event._bubble.width / 2) {
+      const dx = Math.abs(mousepos.x - event._bubble.position.x);
+      // set date visibility
+      event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
+      // precheck dx to avoid sqrt
+      if (dx > event._bubble.width / 2) {
         event._name_label.visible = false;
         continue;
       }
-      // check if hover
+      // show nametag if hover
       const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
       event._name_label.visible = dist <= event._bubble.width / 2 ? true : false;
     }
@@ -188,8 +191,4 @@ class Timeline {
   _GetScrollStep(speed_mult = 1) {
     return (this.date_last.year - this.date_first.year) / 1000 * speed_mult;
   }
-}
-
-class Timepoint {
-
 }
