@@ -32,15 +32,13 @@ class Timeline {
   // Resize
   //
   Resize() {
-    // resize line
     this._line.width = canvas.width;
     for (event of this._events) {
-      // adjust timepoint positions
       event._bubble.position = this._GetDatePosition(event.date);
       event._date_label.position.x = event._bubble.position.x;
       event._name_label.position.x = event._bubble.position.x;
-      // hide name tags
       event._name_label.visible = false;
+      this.HideCollidingDates();
     }
   }
 
@@ -73,7 +71,28 @@ class Timeline {
     timepoint._name_label.position.y -= 30;
     timepoint._name_label.visible = false;
 
+    // date label collision check
+    if (this._events.length >= 2) {
+      let l1 = timepoint._date_label;
+      let l2 = this._events[this._events.length - 2]._date_label;
+      if (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2) {
+        l1.visible = false;
+      }
+    }
+
     app.stage.addChild(timepoint._bubble, timepoint._date_label, timepoint._name_label);
+  }
+
+  //
+  // Hide Colliding Dates
+  //
+  HideCollidingDates() {
+    if (this._events.length < 2) return;
+    for (let i = 1; i < this._events.length; i++) {
+      let l1 = this._events[this._events.length - 1]._date_label;
+      let l2 = this._events[this._events.length - 2]._date_label;
+      l1.visible = (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2) ? false : true;
+    }
   }
 
   //
@@ -169,10 +188,6 @@ class Timeline {
       const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
       event._name_label.visible = dist <= event._bubble.width / 2 ? true : false;
     }
-  }
-
-  AbsolutePosition(date) {
-    return (date.year - this.date_first.year) / (this.date_last.year - this.date_first.year) * canvas.width;
   }
 
   //
