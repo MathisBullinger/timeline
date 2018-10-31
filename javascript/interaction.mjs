@@ -30,8 +30,6 @@ const interaction = {
       timeline.MouseMove(new Point(event.clientX, event.clientY));
     }, {passive: true});
 
-
-
     //
     // mouse move
     //
@@ -55,26 +53,7 @@ const interaction = {
     //
     // Mouse Click
     //
-    $('#timeline').click(e => {
-      let hit;
-      for (let event of timeline._events) {
-        const dist = Math.sqrt(Math.pow(e.clientX - event._bubble.position.x, 2) + Math.pow(e.clientY - event._bubble.position.y, 2));
-        if (dist <= event._bubble.width / 2) {
-          hit = event;
-          break;
-        }
-      }
-      if (hit) {
-        // clicked timepoint
-        const pos_x = hit._bubble.position.x;
-        const pos_y = hit._bubble.position.y;
-        const name = hit.name;
-        const date = hit.date;
-
-        // == insert info box call here ==
-        console.log(`clicked ${name} (${date.gregorian.toString()}) at ${pos_x}, ${pos_y}`);
-      }
-    });
+    $('#timeline').click(e => timeline.HandleClick(new Point(e.clientX, e.clientY)));
 
     //
     // Prevent mac two finger back swipe & zoom
