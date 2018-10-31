@@ -8,13 +8,12 @@ class Timeline {
   // constructor
   //
   constructor() {
-
     this.date_first = new chronos.Date(-10000);
     this.date_last = new chronos.Date(2018);
     this._pos_y = 1 / 1.618;
     this._events = [];
     this._line = new Graphics();
-    this._max_zoom = 1000;
+    this._max_zoom = 500;
     this._min_zoom = this.date_last.year - this.date_first.year;
     this._scroll_min = this.date_first;
     this._scroll_max = this.date_last;
@@ -25,6 +24,40 @@ class Timeline {
     this._line.lineTo(canvas.width, 0);
     this._line.position.y = this._pos_y * canvas.height;
     app.stage.addChild(this._line);
+
+    // start & end date marker
+    this._marker_start_line = new Graphics();
+    this._marker_start_line.lineStyle(1, 0xAAAAAA, 1);
+    this._marker_start_line.moveTo(0, 0);
+    this._marker_start_line.lineTo(0, 30);
+    this._marker_start_line.position.set(canvas.width / 25, this._line.position.y);
+    this._marker_start_date = new PIXI.Text(
+      this._GetPositionDate(this._marker_start_line.position.x).holocene.toString(),
+        new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 14
+      }
+    ));
+    this._marker_start_date.position.set(this._marker_start_line.position.x, this._line.position.y + 40);
+    this._marker_start_date.anchor.x = 0.5;
+
+    this._marker_end_line = new Graphics();
+    this._marker_end_line.lineStyle(1, 0xAAAAAA, 1);
+    this._marker_end_line.moveTo(0, 0);
+    this._marker_end_line.lineTo(0, 30);
+    this._marker_end_line.position.set(canvas.width - canvas.width / 25, this._line.position.y);
+    this._marker_end_date = new PIXI.Text(
+      this._GetPositionDate(this._marker_end_line.position.x).holocene.toString(),
+        new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 14
+      }
+    ));
+    this._marker_end_date.position.set(this._marker_end_line.position.x, this._line.position.y + 40);
+    this._marker_end_date.anchor.x = 0.5;
+
+    app.stage.addChild(this._marker_start_line, this._marker_start_date,
+      this._marker_end_line, this._marker_end_date);
 
   }
 
@@ -39,6 +72,12 @@ class Timeline {
       event._name_label.position.x = event._bubble.position.x;
       event._name_label.visible = false;
       this.HideCollidingDates();
+      this._marker_start_line.position.set(canvas.width / 25, this._line.position.y);
+      this._marker_start_date.position.set(this._marker_start_line.position.x, this._line.position.y + 40);
+      this._marker_end_line.position.set(canvas.width - canvas.width / 25, this._line.position.y);
+      this._marker_end_date.position.set(this._marker_end_line.position.x, this._line.position.y + 40);
+      this._marker_start_date.text = this._GetPositionDate(this._marker_start_line.position.x).holocene.toString();
+      this._marker_end_date.text = this._GetPositionDate(this._marker_end_line.position.x).holocene.toString();
     }
   }
 
@@ -114,7 +153,8 @@ class Timeline {
   // Get Date Position
   //
   _GetDatePosition(date) {
-    let pos_x = 0 + canvas.width / (this.date_last.year - this.date_first.year) * (date.year - this.date_first.year);
+    let pos_x = canvas.width / (this.date_last.year - this.date_first.year) * (date.year - this.date_first.year);
+
     return new Point(Math.round(pos_x), Math.round(this._line.position.y));
 
   }
