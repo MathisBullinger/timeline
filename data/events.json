@@ -1,0 +1,54 @@
+[
+  {
+    "name": "First Temple",
+    "date": [-10000]
+  },
+  {
+    "name": "Chinchorro",
+    "date": [-7000]
+  },
+  {
+    "name": "Indus Valley Civilization",
+    "date": [-3300]
+  },
+  {
+    "name": "Great Pyramid of Giza",
+    "date": [-2560]
+  },
+  {
+    "name": "Xia Dynasty",
+    "date": [-2070]
+  },
+  {
+    "name": "Olmecs in Mexico",
+    "date": [-1500]
+  },
+  {
+    "name": "Late Bronze Age collapse",
+    "date": [-1200]
+  },
+  {
+    "name": "Ancient Greece",
+    "date": [-900]
+  },
+  {
+    "name": "Rome defeats Carthage",
+    "date": [-146]
+  },
+  {
+    "name": "Mayan started Long Count",
+    "date": [250]
+  },
+  {
+    "name": "Colonization of the Americas",
+    "date": [1492]
+  },
+  {
+    "name": "Founding of United Nations",
+    "date": [1945]
+  },
+  {
+    "name": "Apollo 11",
+    "date": [1969]
+  }
+]

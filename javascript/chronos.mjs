@@ -27,7 +27,10 @@ class _Date {
       }
       toString() {
         // remove BC/AD after 1200
-        return `${this._date._toStringDayMonth()} ${this._date._year<1200 ? this.year : this.year.split(' ')[0] }`;
+        let str_daymonth = this._date._toStringDayMonth();
+        if (str_daymonth != '')
+          str_daymonth += ' ';
+        return `${str_daymonth}${this._date._year<1200 ? this.year : this.year.split(' ')[0] }`;
       }
       // force BC/AD indicator after date
       toStringBCAD() {
@@ -44,8 +47,11 @@ class _Date {
         this._date = undefined;
       }
       toString() {
+        let str_daymonth = this._date._toStringDayMonth();
+        if (str_daymonth != '')
+          str_daymonth += ' ';
         // e.g. 12500 => '12,500'
-        return `${this._date._toStringDayMonth()} ${this.year.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        return `${str_daymonth}${Math.floor(this.year).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
       }
     } (this._year + 10000);
 
@@ -67,7 +73,7 @@ class _Date {
   // to string (day & month)
   _toStringDayMonth() {
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    return this.month>0 && this.month<=12 ? `${ this.day > 0 ? this.day : ''}. ` + months[this.month + 1] : '';
+    return this.month>0 && this.month<=12 ? `${ this.day > 0 ? this.day : ''}. ` + months[this.month - 1] : '';
   }
 
   // get & set year

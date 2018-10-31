@@ -6,7 +6,7 @@
 ██      ██ ██   ██ ██     ███████    ██     ██████  ██      ██
 */
 
-export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics };
+export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics, canvas, Point };
 
 var app;
 var renderer;
@@ -15,6 +15,7 @@ var settings;
 var Graphics = PIXI.Graphics;
 var path_images = 'data/img/';
 var sprites = {};
+var Point = PIXI.Point;
 
 //
 // Init Pixi
@@ -83,4 +84,13 @@ function LoadTextures(images, on_done) {
     }
     on_done();
   });
+}
+
+let canvas = {
+  get width() {
+    return $('#timeline').width();
+  },
+  get height() {
+    return $('#timeline').height();
+  }
 }
