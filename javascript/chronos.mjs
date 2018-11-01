@@ -61,7 +61,7 @@ class _Date {
 
   // round
   roundToYear() {
-    return new _Date(this.year);
+    return new _Date(Math.floor(this.year));
   }
   roundToDecade() {
     return new _Date( Math.floor(this.year / 10) * 10 )

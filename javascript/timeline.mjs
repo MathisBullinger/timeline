@@ -17,6 +17,9 @@ class Timeline {
     this._min_zoom = this.date_last.year - this.date_first.year;
     this._scroll_min = this.date_first;
     this._scroll_max = this.date_last;
+    this._split_date = undefined;
+    this._split_pos = 0;
+    this._split_width = 250;
 
     // draw line
     this._line.lineStyle(2, 0x000000, 1);
@@ -26,6 +29,7 @@ class Timeline {
     app.stage.addChild(this._line);
 
     // start & end date marker
+    //
     this._marker_start_line = new Graphics();
     this._marker_start_line.lineStyle(1, 0xAAAAAA, 1);
     this._marker_start_line.moveTo(0, 0);
@@ -59,6 +63,15 @@ class Timeline {
     app.stage.addChild(this._marker_start_line, this._marker_start_date,
       this._marker_end_line, this._marker_end_date);
 
+    // info placeholder box
+    //
+    this._split_box = new Graphics();
+    this._split_box.lineStyle(1, 0xDD5555, 1);
+    this._split_box.drawRect(0, 0, this._split_width, 100);
+    this._split_box.position.set(500, this._line.position.y - this._split_box.height / 2);
+    this._split_box.visible = false;
+    app.stage.addChild(this._split_box);
+
   }
 
   //
@@ -82,6 +95,26 @@ class Timeline {
   }
 
   //
+  // Split (push events away from info box)
+  //
+  _SetSplit(date) {
+    this._RemoveSplit();
+    this._split_pos = this._GetDatePosition(date).x;
+    if (this._split_pos - this._split_width / 2 < 0)
+      this._split_pos = this._split_width / 2;
+    else if (this._split_pos + this._split_width / 2 > canvas.width)
+      this._split_pos = canvas.width - this._split_width / 2;
+    this._split_date = date;
+    this._split_box.position.x = this._split_pos - this._split_box.width / 2;
+    this._split_box.visible = true;
+    console.log('split at', this._split_date.holocene.toString(), this._split_pos);
+  }
+  _RemoveSplit() {
+    this._split_date = undefined;
+    this._split_box.visible = false;
+  }
+
+  //
   // Add event
   //
   AddEvent(timepoint) {
@@ -93,7 +126,11 @@ class Timeline {
 
     // add bubble
     timepoint._bubble.lineStyle(1, 0x000000, 1);
-    timepoint._bubble.beginFill(0xFFFFFF);
+    let cl = '';
+    for (let i = 0; i < 6; i++)
+      cl += 'DEF'.charAt(Math.floor(Math.random()*3));
+    console.log(cl);
+    timepoint._bubble.beginFill(parseInt(cl, 16));
     timepoint._bubble.drawCircle(0, 0, 15);
     timepoint._bubble.endFill();
     timepoint._bubble.position = this._GetDatePosition(timepoint.date);
@@ -154,7 +191,16 @@ class Timeline {
   //
   _GetDatePosition(date) {
     let pos_x = canvas.width / (this.date_last.year - this.date_first.year) * (date.year - this.date_first.year);
-
+    if (this._split_date) {
+      if (date.year < this._split_date.year) {
+        pos_x = (this._split_pos - this._split_width / 2) / (this._split_date.year - this.date_first.year) * (date.year - this.date_first.year);
+      } else if (date.year > this._split_date.year) {
+        const split = this._split_pos + this._split_width / 2;
+        pos_x = split + (canvas.width - split) / (this.date_last.year - this._split_date.year) * (date.year - this._split_date.year);
+      } else {
+        pos_x = this._split_pos;
+      }
+    }
     return new Point(Math.round(pos_x), Math.round(this._line.position.y));
 
   }
@@ -186,10 +232,15 @@ class Timeline {
         break;
       }
     }
-    if (hit)
+    if (hit) {
+      this._SetSplit(hit.date);
       this._OpenInfoBox(hit);
-    else
+    }
+    else {
+      this._RemoveSplit();
       this._HideInfoBox();
+    }
+    this.Resize();
     $('#timeline').focus();
   }
 
