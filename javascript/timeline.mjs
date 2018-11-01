@@ -190,6 +190,7 @@ class Timeline {
       this._OpenInfoBox(hit);
     else
       this._HideInfoBox();
+    $('#timeline').focus();
   }
 
   _OpenInfoBox(event) {
