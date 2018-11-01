@@ -1,0 +1,21 @@
+{
+  "name": "timeline",
+  "version": "1.0.0",
+  "description": "&#10134;&#128511;&#10134;&#127963;&#10134;&#127984;&#10134;&#127981;&#10134;&#128509;&#10134;&#128640;&#10134;&#128752;&#10134;",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run scss-compile",
+    "scss-compile": "node-sass -rw assets/stylesheets/scss -o css/min",
+    "watch": "npm run scss-compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisBullinger/timeline.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MathisBullinger/timeline/issues"
+  },
+  "homepage": "https://github.com/MathisBullinger/timeline#readme"
+}
