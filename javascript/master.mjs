@@ -23,6 +23,14 @@ LoadJSON('data/events.json', data => {
     timeline.AddEvent(new chronos.Timepoint(name, date));
   };
   timeline.LogTimepoints();
+
+});
+
+//
+// Test Animation
+//
+$('.bt-animtest').click(_ => {
+  timeline.ScrollTo(new chronos.Date(1492, _ => console.log('animation test done')));
 });
 
 //

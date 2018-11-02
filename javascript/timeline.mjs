@@ -339,4 +339,34 @@ class Timeline {
   _GetScrollStep(speed_mult = 1) {
     return (this.date_last.year - this.date_first.year) / 1000 * speed_mult;
   }
+
+  //
+  // Scroll To
+  //
+  ScrollTo(date, on_done, duration = 700) {
+    const frame_rate = 16;
+    const steps_total = Math.round(duration / frame_rate);
+    const start_date = this._GetPositionDate(canvas.width / 2);
+
+    console.log('scroll from ' + start_date.year + ' to ' + date.year);
+
+    const timeframe = this.date_last.year - this.date_first.year;
+    for (let i = 0; i < steps_total; i++) {
+
+      const t = i / (steps_total - 1);
+      const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
+      const pos = start_date.year + (date.year - start_date.year) * step;
+
+      setTimeout(step => {
+        this.date_first = new chronos.Date(pos - timeframe / 2);
+        this.date_last = new chronos.Date(pos + timeframe / 2);
+        this._ScrollAdjust();
+        this.Resize();
+      }, i * frame_rate);
+    }
+
+    setTimeout(on_done, duration);
+
+  }
+
 }
