@@ -344,7 +344,7 @@ class Timeline {
   //
   // Scroll To
   //
-  ScrollTo(date, duration = 700, on_done) {
+  ScrollTo(date, duration = 700, on_done = undefined) {
     console.log('scroll to ' + date.holocene.toString());
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
@@ -369,14 +369,14 @@ class Timeline {
       pos_last = pos;
     }
 
-    setTimeout(on_done, duration);
+    if (on_done) setTimeout(on_done, duration);
 
   }
 
   //
   // Zoom To
   //
-  ZoomTo(timeframe, duration = 700, on_done) {
+  ZoomTo(timeframe, duration = 700, on_done = undefined) {
     console.log('zoom to ' + timeframe);
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
@@ -404,7 +404,7 @@ class Timeline {
       frame_last = frame_new;
     }
 
-    setTimeout(on_done, duration);
+    if (on_done) setTimeout(on_done, duration);
 
   }
 
