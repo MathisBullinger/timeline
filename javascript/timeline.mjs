@@ -98,7 +98,6 @@ class Timeline {
   // Split (push events away from info box)
   //
   _SetSplit(date) {
-    this._RemoveSplit();
     this._split_pos = this._GetDatePosition(date).x;
     if (this._split_pos - this._split_width / 2 < 0)
       this._split_pos = this._split_width / 2;
@@ -106,7 +105,7 @@ class Timeline {
       this._split_pos = canvas.width - this._split_width / 2;
     this._split_date = date;
     this._split_box.position.x = this._split_pos - this._split_box.width / 2;
-    this._split_box.visible = true;
+    //this._split_box.visible = true;
     console.log('split at', this._split_date.holocene.toString(), this._split_pos);
   }
   _RemoveSplit() {
@@ -129,7 +128,6 @@ class Timeline {
     let cl = '';
     for (let i = 0; i < 6; i++)
       cl += 'DEF'.charAt(Math.floor(Math.random()*3));
-    console.log(cl);
     timepoint._bubble.beginFill(parseInt(cl, 16));
     timepoint._bubble.drawCircle(0, 0, 15);
     timepoint._bubble.endFill();
@@ -244,19 +242,25 @@ class Timeline {
     $('#timeline').focus();
   }
 
+  //
+  // open & close info box
+  //
   _OpenInfoBox(event) {
     // set title
     $("#infobox > h1").html(event.name);
     $("#infobox > p").html("text");
-    let ePosX = event._bubble.position.x;
-    let ePosY = event._bubble.position.y;
-    let width = $("#infobox").width();
-    let height = $("#infobox").height();
-    let left = ePosX - (width / 2);
-    let top = ePosY - (height / 2) - height - 150;
-    $("#infobox").css({"left":left, "top":top});
+    $("#infobox").css({width: '100px', height: '100px'});
+    let left = this._split_pos - $('#infobox').outerWidth() / 2;
+    let top = this._line.position.y - $('#infobox').outerHeight() / 2;
+    $("#infobox").css({left: left, top: top});
     // show infobox
     $("#infobox").show();
+    $('#infobox').animate({
+      left: left - (250 - $('#infobox').outerWidth()) / 2,
+      top: top - (250 - $('#infobox').outerHeight()) / 2,
+      width: '250px',
+      height: '250px'
+    }, 200);
   }
 
   _HideInfoBox() {
