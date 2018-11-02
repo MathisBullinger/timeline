@@ -307,6 +307,7 @@ class Timeline {
     let zoom_adjust = target_zoom - (this.date_last.year - this.date_first.year);
     this.date_first = new chronos.Date(this.date_first.year - zoom_adjust * zoom_bias);
     this.date_last = new chronos.Date(this.date_last.year + zoom_adjust * (1 - zoom_bias));
+    //console.log('adjust zoom to ' + this.date_first.year + ' to ' + this.date_last.year);
   }
 
   //
@@ -348,13 +349,12 @@ class Timeline {
     const steps_total = Math.round(duration / frame_rate);
     const start_date = this._GetPositionDate(canvas.width / 2);
 
-    console.log('scroll from ' + start_date.year + ' to ' + date.year);
-
     const timeframe = this.date_last.year - this.date_first.year;
     for (let i = 0; i < steps_total; i++) {
 
       const t = i / (steps_total - 1);
       const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
+
       const pos = start_date.year + (date.year - start_date.year) * step;
 
       setTimeout(step => {
@@ -363,6 +363,40 @@ class Timeline {
         this._ScrollAdjust();
         this.Resize();
       }, i * frame_rate);
+    }
+
+    setTimeout(on_done, duration);
+
+  }
+
+  //
+  // Zoom To
+  //
+  ZoomTo(timeframe, on_done, duration = 700) {
+    const frame_rate = 16;
+    const steps_total = Math.round(duration / frame_rate);
+    const start_frame = this.date_last.year - this.date_first.year;
+
+    let frame_last = start_frame;
+    for (let i = 0; i < steps_total; i++) {
+
+      const t = i / (steps_total - 1);
+      const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
+
+      let frame_new = start_frame + (timeframe - start_frame) * step;
+      let zoom_step =  frame_new - frame_last;
+
+      setTimeout(step => {
+        let frame_cur = this.date_last.year - this.date_first.year;
+        this.date_first = new chronos.Date(this.date_first.year - zoom_step / 2);
+        this.date_last = new chronos.Date(this.date_last.year + zoom_step / 2);
+        if (this.date_last.year - this.date_first.year > this._min_zoom)
+          this._ZoomAdjust(this._min_zoom, 0.5);
+        this._ScrollAdjust();
+        this.Resize();
+      }, i * frame_rate);
+
+      frame_last = frame_new;
     }
 
     setTimeout(on_done, duration);

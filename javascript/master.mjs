@@ -30,7 +30,19 @@ LoadJSON('data/events.json', data => {
 // Test Animation
 //
 $('.bt-animtest').click(_ => {
-  timeline.ScrollTo(new chronos.Date(1492, _ => console.log('animation test done')));
+  timeline.ZoomTo(5000, _ => {
+    timeline.ScrollTo(new chronos.Date(-2560), _ => {
+      timeline.ZoomTo(1000, _ => {
+        timeline.ScrollTo(new chronos.Date(-1200), _=> {
+          timeline.ZoomTo(200, _=> {
+            timeline.ScrollTo(new chronos.Date(1900), _ => {
+              timeline.ZoomTo(12018, ()=>{}, 3000);
+            }, 10000);
+          });
+        }, 2000);
+      });
+    }, 800);
+  }, 800);
 });
 
 //
