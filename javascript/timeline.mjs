@@ -79,7 +79,7 @@ class Timeline {
   //
   Resize() {
     this._line.width = canvas.width;
-    for (event of this._events) {
+    for (let event of this._events) {
       event._bubble.position = this._GetDatePosition(event.date);
       event._date_label.position.x = event._bubble.position.x;
       event._name_label.position.x = event._bubble.position.x;
