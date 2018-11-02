@@ -344,25 +344,29 @@ class Timeline {
   //
   // Scroll To
   //
-  ScrollTo(date, on_done, duration = 700) {
+  ScrollTo(date, duration = 700, on_done) {
+    console.log('scroll to ' + date.holocene.toString());
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
     const start_date = this._GetPositionDate(canvas.width / 2);
 
     const timeframe = this.date_last.year - this.date_first.year;
+    let pos_last = start_date.year;
     for (let i = 0; i < steps_total; i++) {
 
       const t = i / (steps_total - 1);
       const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
 
       const pos = start_date.year + (date.year - start_date.year) * step;
+      const pos_delta = pos - pos_last;
 
       setTimeout(step => {
-        this.date_first = new chronos.Date(pos - timeframe / 2);
-        this.date_last = new chronos.Date(pos + timeframe / 2);
+        this.date_first = new chronos.Date(this.date_first.year + pos_delta);
+        this.date_last = new chronos.Date(this.date_last.year + pos_delta);
         this._ScrollAdjust();
         this.Resize();
       }, i * frame_rate);
+      pos_last = pos;
     }
 
     setTimeout(on_done, duration);
@@ -372,7 +376,8 @@ class Timeline {
   //
   // Zoom To
   //
-  ZoomTo(timeframe, on_done, duration = 700) {
+  ZoomTo(timeframe, duration = 700, on_done) {
+    console.log('zoom to ' + timeframe);
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
     const start_frame = this.date_last.year - this.date_first.year;

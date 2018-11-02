@@ -30,19 +30,22 @@ LoadJSON('data/events.json', data => {
 // Test Animation
 //
 $('.bt-animtest').click(_ => {
-  timeline.ZoomTo(5000, _ => {
-    timeline.ScrollTo(new chronos.Date(-2560), _ => {
-      timeline.ZoomTo(1000, _ => {
-        timeline.ScrollTo(new chronos.Date(-1200), _=> {
-          timeline.ZoomTo(200, _=> {
-            timeline.ScrollTo(new chronos.Date(1900), _ => {
-              timeline.ZoomTo(12018, ()=>{}, 3000);
-            }, 10000);
-          });
-        }, 2000);
+  timeline.ScrollTo(new chronos.Date(-3300), 1500);
+  timeline.ZoomTo(2000, 1500, _ => {
+    timeline.ScrollTo(new chronos.Date(-2560), 900, _ => {
+      timeline.ScrollTo(new chronos.Date(-1500), 3000);
+      timeline.ZoomTo(7000, 3000, _ => {
+        timeline.ZoomTo(100, 4000);
+        timeline.ScrollTo(new chronos.Date(1945), 5000, _ => {
+          timeline.ZoomTo(50, 800, _ => {
+            timeline.ScrollTo(new chronos.Date(1969), 2500, _ => {
+              timeline.ZoomTo(12018, 3000);
+            });
+          })
+        });
       });
-    }, 800);
-  }, 800);
+    })
+  });
 });
 
 //
