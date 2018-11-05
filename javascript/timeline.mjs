@@ -31,6 +31,9 @@ class Timeline {
 
     // start & end date marker
     //
+    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
+    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
+
     this._marker_start_line = new Graphics();
     this._marker_start_line.lineStyle(1, 0xAAAAAA, 1);
     this._marker_start_line.moveTo(0, 0);
@@ -92,6 +95,8 @@ class Timeline {
       this._marker_end_date.position.set(this._marker_end_line.position.x, this._line.position.y + 40);
       this._marker_start_date.text = this._GetPositionDate(this._marker_start_line.position.x).holocene.toString();
       this._marker_end_date.text = this._GetPositionDate(this._marker_end_line.position.x).holocene.toString();
+      $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
+      $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
     }
   }
 
