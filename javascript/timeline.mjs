@@ -239,7 +239,6 @@ class Timeline {
       this._HideInfoBox();
     }
     this.Resize();
-    $('#timeline').focus();
   }
 
   //

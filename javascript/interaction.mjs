@@ -14,6 +14,8 @@ const interaction = {
     let _scroll_last = new Date();
 
     document.body.addEventListener('wheel', event => {
+      if (event.target.className.includes('infobox')) return;
+
       if (new Date() - this._scroll_last >= 20)
         this._wheel_mode = undefined;
 
@@ -58,7 +60,10 @@ const interaction = {
     //
     // Prevent mac two finger back swipe & zoom
     //
-    $(document).on('mousewheel', e => e.preventDefault());
+    $(document).on('mousewheel', e => {
+      if (!e.target.className.includes('infobox'))
+        e.preventDefault()
+    });
 
     //
     // Window Resize
