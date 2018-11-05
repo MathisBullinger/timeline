@@ -290,6 +290,8 @@ class Timeline {
   // Zoom
   //
   Zoom(dy, px) {
+    this._RemoveSplit();
+    this._HideInfoBox();
     let zoom_years = this._GetZoomStep(dy);
     let zoom_target = this._GetPositionDate(px);
     let zoom_bias = this._GetZoomBias(zoom_target);
@@ -307,13 +309,14 @@ class Timeline {
     let zoom_adjust = target_zoom - (this.date_last.year - this.date_first.year);
     this.date_first = new chronos.Date(this.date_first.year - zoom_adjust * zoom_bias);
     this.date_last = new chronos.Date(this.date_last.year + zoom_adjust * (1 - zoom_bias));
-    //console.log('adjust zoom to ' + this.date_first.year + ' to ' + this.date_last.year);
   }
 
   //
   // Scroll
   //
   Scroll(dx) {
+    this._RemoveSplit();
+    this._HideInfoBox();
     let scroll_step = this._GetScrollStep(dx);
     this.date_first = new chronos.Date(this.date_first.year + scroll_step);
     this.date_last = new chronos.Date(this.date_last.year + scroll_step);
