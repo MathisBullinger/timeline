@@ -419,39 +419,30 @@ class Timeline {
 // structure wiki article data
 //
 function FetchWikiComment(ref, callback) {
-  // load and parse dbpedia info
-  let base_url = location.protocol == 'https:' ? 'https://' : 'http://';
-  base_url += 'dbpedia.org/data/';
-  LoadJSON(encodeURI(base_url + ref + '.json'), function(response) {
-    let data;
-    try {
-      data = JSON.parse(response)['http://dbpedia.org/resource/' + ref];
-      for (let property in data) {
-        if (data.hasOwnProperty(property)) {
-          if (property.includes('comment')) {
-            for (let comment of data[property]) {
-              if (comment.lang == 'en') {
-                callback(comment.value);
-                return;
-              }
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.warn("can't parse JSON", err);
-    }
+  let base_url = 'http://';
+  //base_url += 'www.wikiwand.com/en/';
+  base_url += 'en.wikipedia.org/wiki/';
+  console.log('load wiki', base_url + ref);
+  FetchFile(encodeURI(base_url + ref), function(response) {
+
+    let data = $($($.parseHTML(response)).find('.mw-parser-output').find('p:not([class])').get(0)).text();
+    console.log(data);
+    callback(data);
+    return;
+
   });
 }
 
-function LoadJSON(file, callback) {
-  var xobj = new XMLHttpRequest();
-  xobj.overrideMimeType("application/json");
-  xobj.open('GET', file, true);
-  xobj.onreadystatechange = function() {
-    if (xobj.readyState == 4 && xobj.status == "200") {
-      callback(xobj.responseText);
+function FetchFile(file, callback) {
+  var request = new XMLHttpRequest();
+    request.open('GET', 'https://cors.io/?' + file, true);
+    request.send(null);
+    request.onreadystatechange = function () {
+      if (request.readyState === 4 && request.status === 200) {
+        var type = request.getResponseHeader('Content-Type');
+        if (type.indexOf("text") !== 1) {
+          callback(request.responseText);
+        }
+      }
     }
-  };
-  xobj.send(null);
 }
