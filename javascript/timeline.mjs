@@ -2,6 +2,7 @@
 import { app, Graphics, canvas, Point } from './graphics.mjs';
 import { chronos } from './chronos.mjs';
 import { Wiki } from './wiki.mjs';
+import { color } from './colors.mjs';
 export { Timeline };
 
 class Timeline {
@@ -23,7 +24,7 @@ class Timeline {
     this._split_width = 250;
 
     // draw line
-    this._line.lineStyle(2, 0x000000, 1);
+    this._line.lineStyle(4, color.line, 1);
     this._line.moveTo(0, 0);
     this._line.lineTo(canvas.width, 0);
     this._line.position.y = this._pos_y * canvas.height;
@@ -78,12 +79,13 @@ class Timeline {
     timepoint._name_label = this._CreateLabel();
 
     // add bubble
-    timepoint._bubble.lineStyle(1, 0x000000, 1);
-    let cl = '';
-    for (let i = 0; i < 6; i++)
-      cl += 'DEF'.charAt(Math.floor(Math.random()*3));
-    timepoint._bubble.beginFill(parseInt(cl, 16));
-    timepoint._bubble.drawCircle(0, 0, 15);
+    timepoint._bubble.lineStyle(2, 0x000000, 1);
+    // let cl = '';
+    // for (let i = 0; i < 6; i++)
+    //   cl += 'DEF'.charAt(Math.floor(Math.random()*3));
+    // timepoint._bubble.beginFill(parseInt(cl, 16));
+    timepoint._bubble.beginFill(color.fill);
+    timepoint._bubble.drawCircle(0, 0, 20);
     timepoint._bubble.endFill();
     timepoint._bubble.position = this._GetDatePosition(timepoint.date);
 
