@@ -1,54 +1,67 @@
 [
   {
     "name": "First Temple",
-    "date": [-10000]
+    "date": [-10000],
+    "wiki": "Göbekli_Tepe"
   },
   {
     "name": "Chinchorro",
-    "date": [-7000]
+    "date": [-7000],
+    "wiki": "Chinchorro_mummies"
   },
   {
     "name": "Indus Valley Civilization",
-    "date": [-3300]
+    "date": [-3300],
+    "wiki": "Indus_Valley_Civilisation"
   },
   {
     "name": "Great Pyramid of Giza",
-    "date": [-2560]
+    "date": [-2560],
+    "wiki": "Great_Pyramid_of_Giza"
   },
   {
     "name": "Xia Dynasty",
-    "date": [-2070]
+    "date": [-2070],
+    "wiki": "Xia_dynasty"
   },
   {
     "name": "Olmecs in Mexico",
-    "date": [-1500]
+    "date": [-1500],
+    "wiki": "Olmecs"
   },
   {
     "name": "Late Bronze Age collapse",
-    "date": [-1200]
+    "date": [-1200],
+    "wiki": "Late_Bronze_Age_collapse"
   },
   {
     "name": "Ancient Greece",
-    "date": [-900]
+    "date": [-900],
+    "wiki": "Ancient_Greece"
   },
   {
     "name": "Rome defeats Carthage",
-    "date": [-146]
+    "date": [-146],
+    "wiki": "Punic_Wars"
   },
   {
     "name": "Mayan started Long Count",
-    "date": [250]
+    "date": [250],
+    "wiki": "Mesoamerican_Long_Count_calendar"
   },
   {
     "name": "Colonization of the Americas",
-    "date": [1492]
+    "date": [1492],
+    "wiki": "European_colonization_of_the_Americas"
   },
   {
     "name": "Founding of United Nations",
-    "date": [1945]
+    "date": [1945],
+    "wiki": "United_Nations"
   },
   {
     "name": "Apollo 11",
-    "date": [1969]
+    "date": [1969],
+    "wiki": "Apollo_11"
   }
 ]
