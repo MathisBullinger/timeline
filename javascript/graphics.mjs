@@ -7,6 +7,7 @@
 */
 
 export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics, canvas, Point };
+import { color } from './colors.mjs';
 
 var app;
 var renderer;
@@ -40,7 +41,7 @@ function InitPixi() {
   });
   view = app.view;
   renderer = app.renderer;
-  renderer.backgroundColor = 0xFFFFFF;
+  renderer.backgroundColor = color.background;
 
   // add pixi canvas to HTML
   container.append(app.view);

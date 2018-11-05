@@ -9,7 +9,6 @@ class Wiki {
     let query = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles='
     query += wiki_ref;
     jsonp(query, result => {
-      console.log(result);
       const extract = result.query.pages[Object.keys(result.query.pages)[0]].extract;
       callback(extract);
     });
