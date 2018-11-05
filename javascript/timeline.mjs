@@ -261,6 +261,11 @@ class Timeline {
       width: '250px',
       height: '250px'
     }, 200);
+
+    // load wiki text
+    FetchWikiComment(event.wiki_ref, comment => {
+      $('#infobox > p').text(comment);
+    });
   }
 
   _HideInfoBox() {
@@ -411,4 +416,43 @@ class Timeline {
 
   }
 
+}
+
+//
+// structure wiki article data
+//
+function FetchWikiComment(ref, callback) {
+  // load and parse dbpedia info
+  LoadJSON(encodeURI('http://dbpedia.org/data/' + ref + '.json'), function(response) {
+    let data;
+    try {
+      data = JSON.parse(response)['http://dbpedia.org/resource/' + ref];
+      for (let property in data) {
+        if (data.hasOwnProperty(property)) {
+          if (property.includes('comment')) {
+            for (let comment of data[property]) {
+              if (comment.lang == 'en') {
+                callback(comment.value);
+                return;
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("can't parse JSON", err);
+    }
+  });
+}
+
+function LoadJSON(file, callback) {
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', file, true);
+  xobj.onreadystatechange = function() {
+    if (xobj.readyState == 4 && xobj.status == "200") {
+      callback(xobj.responseText);
+    }
+  };
+  xobj.send(null);
 }

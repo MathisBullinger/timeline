@@ -89,9 +89,10 @@ class _Date {
 // Timepoint
 //
 class _Timepoint {
-  constructor(name, date) {
+  constructor(name, date, wiki_ref) {
     this.date = date;
     this.name = name;
+    this.wiki_ref = wiki_ref;
   }
 }
 

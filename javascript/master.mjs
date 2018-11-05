@@ -20,7 +20,8 @@ LoadJSON('data/events.json', data => {
       event.date[0], // year
       event.date.length >= 2 ? event.date[1] : 0, // month
       event.date.length >= 3 ? event.date[2] : 0); // day
-    timeline.AddEvent(new chronos.Timepoint(name, date));
+    let wiki_ref = event.wiki;
+    timeline.AddEvent(new chronos.Timepoint(name, date, wiki_ref));
   };
   timeline.LogTimepoints();
 
