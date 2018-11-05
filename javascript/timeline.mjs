@@ -34,48 +34,6 @@ class Timeline {
     $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
     $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
 
-    this._marker_start_line = new Graphics();
-    this._marker_start_line.lineStyle(1, 0xAAAAAA, 1);
-    this._marker_start_line.moveTo(0, 0);
-    this._marker_start_line.lineTo(0, 30);
-    this._marker_start_line.position.set(canvas.width / 25, this._line.position.y);
-    this._marker_start_date = new PIXI.Text(
-      this._GetPositionDate(this._marker_start_line.position.x).holocene.toString(),
-        new PIXI.TextStyle({
-        fontFamily: "Arial",
-        fontSize: 14
-      }
-    ));
-    this._marker_start_date.position.set(this._marker_start_line.position.x, this._line.position.y + 40);
-    this._marker_start_date.anchor.x = 0.5;
-
-    this._marker_end_line = new Graphics();
-    this._marker_end_line.lineStyle(1, 0xAAAAAA, 1);
-    this._marker_end_line.moveTo(0, 0);
-    this._marker_end_line.lineTo(0, 30);
-    this._marker_end_line.position.set(canvas.width - canvas.width / 25, this._line.position.y);
-    this._marker_end_date = new PIXI.Text(
-      this._GetPositionDate(this._marker_end_line.position.x).holocene.toString(),
-        new PIXI.TextStyle({
-        fontFamily: "Arial",
-        fontSize: 14
-      }
-    ));
-    this._marker_end_date.position.set(this._marker_end_line.position.x, this._line.position.y + 40);
-    this._marker_end_date.anchor.x = 0.5;
-
-    app.stage.addChild(this._marker_start_line, this._marker_start_date,
-      this._marker_end_line, this._marker_end_date);
-
-    // info placeholder box
-    //
-    this._split_box = new Graphics();
-    this._split_box.lineStyle(1, 0xDD5555, 1);
-    this._split_box.drawRect(0, 0, this._split_width, 100);
-    this._split_box.position.set(500, this._line.position.y - this._split_box.height / 2);
-    this._split_box.visible = false;
-    app.stage.addChild(this._split_box);
-
   }
 
   //
@@ -89,12 +47,6 @@ class Timeline {
       event._name_label.position.x = event._bubble.position.x;
       event._name_label.visible = false;
       this.HideCollidingDates();
-      this._marker_start_line.position.set(canvas.width / 25, this._line.position.y);
-      this._marker_start_date.position.set(this._marker_start_line.position.x, this._line.position.y + 40);
-      this._marker_end_line.position.set(canvas.width - canvas.width / 25, this._line.position.y);
-      this._marker_end_date.position.set(this._marker_end_line.position.x, this._line.position.y + 40);
-      this._marker_start_date.text = this._GetPositionDate(this._marker_start_line.position.x).holocene.toString();
-      this._marker_end_date.text = this._GetPositionDate(this._marker_end_line.position.x).holocene.toString();
       $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
       $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
     }
@@ -110,11 +62,9 @@ class Timeline {
     else if (this._split_pos + this._split_width / 2 > canvas.width)
       this._split_pos = canvas.width - this._split_width / 2;
     this._split_date = date;
-    this._split_box.position.x = this._split_pos - this._split_box.width / 2;
   }
   _RemoveSplit() {
     this._split_date = undefined;
-    this._split_box.visible = false;
   }
 
   //
