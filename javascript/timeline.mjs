@@ -1,6 +1,7 @@
 
 import { app, Graphics, canvas, Point } from './graphics.mjs';
 import { chronos } from './chronos.mjs';
+import { Wiki } from './wiki.mjs';
 export { Timeline };
 
 class Timeline {
@@ -245,7 +246,7 @@ class Timeline {
   _OpenInfoBox(event) {
     // set title
     $("#infobox > h1").html(event.name);
-    $("#infobox > p").html("text");
+    $("#infobox > p").html("loading description...");
     $("#infobox").css({width: '100px', height: '100px'});
     let left = this._split_pos - $('#infobox').outerWidth() / 2;
     let top = this._line.position.y - $('#infobox').outerHeight() / 2;
@@ -259,9 +260,8 @@ class Timeline {
       height: '250px'
     }, 200);
 
-    // load wiki text
-    FetchWikiComment(event.wiki_ref, comment => {
-      $('#infobox > p').text(comment);
+    Wiki.GetExtract(event.wiki_ref, extract => {
+      $('#infobox > p').text(extract);
     });
   }
 
