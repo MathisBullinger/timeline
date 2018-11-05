@@ -105,8 +105,6 @@ class Timeline {
       this._split_pos = canvas.width - this._split_width / 2;
     this._split_date = date;
     this._split_box.position.x = this._split_pos - this._split_box.width / 2;
-    //this._split_box.visible = true;
-    console.log('split at', this._split_date.holocene.toString(), this._split_pos);
   }
   _RemoveSplit() {
     this._split_date = undefined;
@@ -422,7 +420,9 @@ class Timeline {
 //
 function FetchWikiComment(ref, callback) {
   // load and parse dbpedia info
-  LoadJSON(encodeURI('http://dbpedia.org/data/' + ref + '.json'), function(response) {
+  let base_url = location.protocol == 'https:' ? 'https://' : 'http://';
+  base_url += 'dbpedia.org/data/';
+  LoadJSON(encodeURI(base_url + ref + '.json'), function(response) {
     let data;
     try {
       data = JSON.parse(response)['http://dbpedia.org/resource/' + ref];
