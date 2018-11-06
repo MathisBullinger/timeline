@@ -291,10 +291,17 @@ class Timeline {
     Wiki.GetExtract(event.wiki_ref, extract => {
       $('#infobox > p').text(extract);
     });
+
+    // image
+    Wiki.GetImage(event.wiki_ref, img => {
+      $('#infobox-image').attr('src', img);
+      console.log(img);
+    });
   }
 
   _HideInfoBox() {
     $("#infobox").hide();
+    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
   }
 
 
