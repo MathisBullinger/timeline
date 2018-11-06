@@ -69,7 +69,8 @@ class Timeline {
   FitBubbles() {
     // get bubbles that are visible
     const events = this._events.filter(event =>
-      event._bubble.position.x >= 0 && event._bubble.position.x <= canvas.width
+      event._bubble.position.x + this._bubble_rad_cur >= 0 ||
+      event._bubble.position.x - this._bubble_rad_cur <= canvas.width
     );
 
     // get minimum permitted diameter
@@ -90,7 +91,7 @@ class Timeline {
 
     // set new radius & reset y
     events.forEach(event => {
-      this._RenderBubble(event, dist_min / 2, 2, event._bubble.position);
+      this._RenderBubble(event, rad_new, 2, event._bubble.position);
       event._bubble.position.y = this._line.position.y;
     });
 
@@ -102,7 +103,7 @@ class Timeline {
 
   _SolveBubbleCollisions(events) {
     if (events.length < 2) return;
-    const off_y = 50;
+    const off_y = this._bubble_rad_cur * 1.2;
     let dir = true;
     for (let i = 1; i < events.length; i++) {
       const dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
