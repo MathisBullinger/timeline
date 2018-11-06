@@ -76,6 +76,10 @@ class _Date {
     return this.month>0 && this.month<=12 ? `${ this.day > 0 ? this.day : ''}. ` + months[this.month - 1] : '';
   }
 
+  toStringType(date_type) {
+    return date_type.toLowerCase() == 'gregorian' ? this.gregorian.toString() : this.holocene.toString();
+  }
+
   // get & set year
   get year() { return this._year; }
   set year(value) {

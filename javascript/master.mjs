@@ -50,6 +50,15 @@ $('.bt-animtest').click(_ => {
 });
 
 //
+// Toggle Date
+//
+$('.bt-date-toggle').click(_ => {
+  const type_new = $('.bt-date-toggle').text();
+  $('.bt-date-toggle').text(type_new == 'Gregorian' ? 'Holocene' : 'Gregorian');
+  timeline.SetDateType(type_new);
+})
+
+//
 // Display mobile warning
 //
 function MobileWarning() {

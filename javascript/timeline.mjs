@@ -22,6 +22,7 @@ class Timeline {
     this._split_date = undefined;
     this._split_pos = 0;
     this._split_width = 250;
+    this._date_type = 'holocene';
 
     // draw line
     this._line.lineStyle(4, color.line, 1);
@@ -32,8 +33,9 @@ class Timeline {
 
     // start & end date marker
     //
-    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
-    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
+    //let tmp_date = this._date_type == 'holocene' ? this._GetPositionDate(canvas.width / 100).holocene : this._GetPositionDate(canvas.width / 100).gregorian;
+    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
+    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
 
   }
 
@@ -48,8 +50,20 @@ class Timeline {
       event._name_label.position.x = event._bubble.position.x;
       event._name_label.visible = false;
       this.HideCollidingDates();
-      $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).holocene.toString());
-      $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).holocene.toString());
+      $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
+      $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
+    }
+  }
+
+  //
+  // Set Date Type
+  //
+  SetDateType(type) {
+    this._date_type = type.toLowerCase();
+    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
+    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
+    for (let event of this._events) {
+      event._date_label.text = event.date.toStringType(this._date_type);
     }
   }
 
@@ -80,17 +94,13 @@ class Timeline {
 
     // add bubble
     timepoint._bubble.lineStyle(2, 0x000000, 1);
-    // let cl = '';
-    // for (let i = 0; i < 6; i++)
-    //   cl += 'DEF'.charAt(Math.floor(Math.random()*3));
-    // timepoint._bubble.beginFill(parseInt(cl, 16));
     timepoint._bubble.beginFill(color.fill);
     timepoint._bubble.drawCircle(0, 0, 20);
     timepoint._bubble.endFill();
     timepoint._bubble.position = this._GetDatePosition(timepoint.date);
 
     // set date label
-    timepoint._date_label.text = timepoint.date.holocene.toString();
+    timepoint._date_label.text = timepoint.date.toStringType(this._date_type);
     timepoint._date_label.position = timepoint._bubble.position;
     timepoint._date_label.position.y += 30;
     timepoint._date_label.alpha = 0;
@@ -307,7 +317,6 @@ class Timeline {
   // Scroll To
   //
   ScrollTo(date, duration = 700, on_done = undefined) {
-    console.log('scroll to ' + date.holocene.toString());
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
     const start_date = this._GetPositionDate(canvas.width / 2);
@@ -339,7 +348,6 @@ class Timeline {
   // Zoom To
   //
   ZoomTo(timeframe, duration = 700, on_done = undefined) {
-    console.log('zoom to ' + timeframe);
     const frame_rate = 16;
     const steps_total = Math.round(duration / frame_rate);
     const start_frame = this.date_last.year - this.date_first.year;

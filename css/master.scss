@@ -3,6 +3,7 @@ html {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 #timeline {
@@ -53,10 +54,18 @@ html {
 }
 
 .bt-animtest {
-  position: relative;
+  position: absolute;
   width: 50;
   height: 20px;
   z-index: 500;
+}
+
+.bt-date-toggle {
+  position: absolute;
+  width: 50;
+  height: 20;
+  z-index: 500;
+  transform: translateX(-100%) translateX(100vw);
 }
 
 .timeline-title {
@@ -68,15 +77,19 @@ html {
   align-items: center;
   font-family: Helvetica;
   color: #595755;
+  line-height: 1.2;
 
   p {
     font-size: 36px;
     letter-spacing: 0.06em;
     text-align: center;
-    line-height: 1.4;
+    font-weight: light;
+    font-style: italic;
 
     span {
       font-size: 61px;
+      font-weight: bold;
+      font-style: italic;
     }
   }
 }
@@ -91,7 +104,8 @@ html {
   z-index: 100;
 
   p {
-    font-family: Helvetica;
+    //font-family: Helvetica;
+
     line-height: normal;
     font-size: 16px;
     text-align: center;
