@@ -38,18 +38,33 @@ html {
   }
 }
 
+
 #infobox {
-  position: absolute;
-  box-sizing: border-box;
+  position: fixed;
   display: none;
-  width: 100px;
-  height: 100px;
-  border-radius: 5px;
-  box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-  background-color: #f7f7f7;
-  padding: 30px;
+  padding: 12px;
   z-index: 999;
+  background: #E7E4DC;
+  border: 2px solid #595755;
+  box-sizing: border-box;
+  border-radius: 3px;
+  font-family: Helvetica;
+  line-height: normal;
+  text-align: center;
+  color: #343430;
+  padding: 24px;
+  height: 100%;
+  overflow-x: hidden;
   overflow-y: scroll;
+}
+#infobox h3 {
+  font-size: 12px;
+}
+
+#infobox p {
+  line-height: 24px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
 }
 
 .bt-animtest {
@@ -106,4 +121,29 @@ html {
 .label-end {
   background: url("../../data/icon/date_end_label.svg");
   transform: translateX(-100%) translateX(98vw);
+}
+
+// -webkit-scrollbar
+/* Let's get this party started */
+::-webkit-scrollbar {
+  width: 8px;
+  padding: 12px;
+  cursor:pointer;
+  background-color: #fafafa;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #333;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+background: #6f6f6f;
 }
