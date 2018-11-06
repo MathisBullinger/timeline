@@ -24,6 +24,7 @@ LoadJSON('data/events.json', data => {
     timeline.AddEvent(new chronos.Timepoint(name, date, wiki_ref));
   };
   timeline.LogTimepoints();
+  timeline.FitBubbles();
 
 });
 
