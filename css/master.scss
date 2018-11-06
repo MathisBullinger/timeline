@@ -39,7 +39,6 @@ html {
   }
 }
 
-
 #infobox {
   position: fixed;
   display: none;
@@ -58,6 +57,7 @@ html {
   overflow-x: hidden;
   overflow-y: scroll;
 }
+
 #infobox h3 {
   font-size: 12px;
 }
@@ -75,14 +75,6 @@ html {
   z-index: 500;
 }
 
-.bt-date-toggle {
-  position: absolute;
-  width: 50;
-  height: 20;
-  z-index: 500;
-  transform: translateX(-100%) translateX(100vw);
-}
-
 .timeline-title {
   position: absolute;
   z-index: 100;
@@ -94,14 +86,12 @@ html {
   color: #595755;
   line-height: 1.4;
   letter-spacing: 0.06em;
-
   // A Brief History of
   p {
     font-size: 36px;
     text-align: center;
     font-weight: light;
     font-style: italic;
-
     // Human Civilization
     span {
       font-size: 61px;
@@ -122,7 +112,6 @@ html {
 
   p {
     //font-family: Helvetica;
-
     line-height: normal;
     font-size: 16px;
     text-align: center;
@@ -134,6 +123,7 @@ html {
 .label-start {
   background: url("../../data/icon/date_start_label.svg");
 }
+
 .label-end {
   background: url("../../data/icon/date_end_label.svg");
   transform: translateX(-100%) translateX(98vw);
@@ -142,7 +132,7 @@ html {
 .hero {
   position: fixed;
   background-color: #e15915;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 2px;
   background: #343430;
   width: 250px;
@@ -154,8 +144,8 @@ html {
 
 .hero h1 {
   color: #FFFFFF;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   font-family: Helvetica;
   line-height: 90px;
   font-size: 16px;
@@ -174,28 +164,93 @@ html {
   border-left: solid 10px transparent;
   border-right: solid 10px transparent;
 }
-
-
 // -webkit-scrollbar
+
 ::-webkit-scrollbar {
   width: 8px;
   padding: 12px;
-  cursor:pointer;
+  cursor: pointer;
   background-color: #fafafa;
 }
-
 /* Track */
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 10px;
   border-radius: 10px;
 }
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   background: #333;
 }
+
 ::-webkit-scrollbar-thumb:window-inactive {
-background: #6f6f6f;
+  background: #6f6f6f;
+}
+
+.switch-date-wrap {
+  position: absolute;
+  z-index: 500;
+  top: 5vh;
+  transform: translateX(-100%) translateX(95vw);
+  width: 55px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  p {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    margin-left: -20px;
+    margin-right: -20px;
+    text-align: center;
+    font-size: 10px;
+  }
+}
+
+.onoffswitch-checkbox {
+  display: none;
+}
+
+.onoffswitch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  height: 20px;
+  padding: 0;
+  line-height: 20px;
+  border: 0 solid #FFFFFF;
+  border-radius: 30px;
+  background-color: #CCCCCC;
+}
+
+.onoffswitch-label:before {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: -5px;
+  background: #595755;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 31px;
+  border-radius: 30px;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label {
+  background-color: #97FF8B;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label,
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+  border-color: #97FF8B;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+  right: 0;
+  background-color: #595755;
 }

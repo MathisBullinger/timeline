@@ -1,48 +1,55 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Timeline</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/min/master.css">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-  </head>
-  <body>
 
-    <!-- Timeline Wrapper -->
-    <div id="timeline"></div>
+<head>
+  <meta charset="utf-8">
+  <title>Timeline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/min/master.css">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+</head>
 
-    <!-- Infobox -->
-    <div class='infobox' id="infobox">
-      <h1 class='infobox-title'>Default</h1>
-      <img class='infobox-image' id="infobox-image" width="200" src="https://via.placeholder.com/150" alt="event picture">
-      <p class='infobox-comment'></p>
-    </div>
-    <div class="hero">
-      <h1>hero</h1>
-    </div>
+<body>
 
-    <!-- Title -->
-    <div class="timeline-title">
-      <p>A Brief History of<br/><span>Human Civilization</span></p>
-    </div>
+  <!-- Timeline Wrapper -->
+  <div id="timeline"></div>
 
-    <!-- Buttons -->
-    <button class="bt-animtest">Scroll Test</button>
-    <button class="bt-date-toggle">Gregorian</button>
+  <!-- Infobox -->
+  <div class='infobox' id="infobox">
+    <h1 class='infobox-title'>Default</h1>
+    <img class='infobox-image' id="infobox-image" width="200" src="https://via.placeholder.com/150" alt="event picture">
+    <p class='infobox-comment'></p>
+  </div>
+  <div class="hero">
+    <h1>hero</h1>
+  </div>
 
-    <!-- Date Labels -->
-    <div class="date-label label-start">
-      <p>start date</p>
-    </div>
-    <div class="date-label label-end">
-      <p>end date</p>
-    </div>
+  <!-- Title -->
+  <div class="timeline-title">
+    <p>A Brief History of<br /><span>Human Civilization</span></p>
+  </div>
 
-    <!-- Scripts -->
-    <script src="javascript/util/jquery.min.js" charset="utf-8"></script>
-    <script src="javascript/util/pixi.js" charset="utf-8"></script>
-    <script type="module" src="javascript/master.mjs" charset="utf-8"></script>
-  </body>
+  <!-- Buttons -->
+  <button class="bt-animtest">Scroll Test</button>
+  <button class="bt-date-toggle">Gregorian</button>
+  <div class="switch-date-wrap">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="switch-date" checked>
+    <label class="onoffswitch-label" for="switch-date"></label>
+    <p class="date-type">Holocene</p>
+  </div>
+
+  <!-- Date Labels -->
+  <div class="date-label label-start">
+    <p>start date</p>
+  </div>
+  <div class="date-label label-end">
+    <p>end date</p>
+  </div>
+
+  <!-- Scripts -->
+  <script src="javascript/util/jquery.min.js" charset="utf-8"></script>
+  <script src="javascript/util/pixi.js" charset="utf-8"></script>
+  <script type="module" src="javascript/master.mjs" charset="utf-8"></script>
+</body>
+
 </html>

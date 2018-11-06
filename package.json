@@ -17,5 +17,6 @@
   "bugs": {
     "url": "https://github.com/MathisBullinger/timeline/issues"
   },
-  "homepage": "https://github.com/MathisBullinger/timeline#readme"
+  "homepage": "https://github.com/MathisBullinger/timeline#readme",
+  "dependencies": {}
 }
