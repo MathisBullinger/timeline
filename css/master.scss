@@ -115,6 +115,28 @@ html {
   }
 }
 
+h1.page-title  {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 10;
+  font-style: italic;
+  line-height: normal;
+  font-size: 36px;
+  text-align: center;
+  color: #595755;
+  margin: 57px 0px 0px 0px;
+}
+
+h2.page-subtitle  {
+  font-family: Helvetica;
+  line-height: normal;
+  font-style: italic;
+  font-size: 61px;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: #595755;
+  margin: 0px 0px 0px 0px;
+}
+
 .label-start {
   background: url("../../data/icon/date_start_label.svg");
 }
