@@ -52,19 +52,27 @@ html {
   line-height: normal;
   text-align: center;
   color: #343430;
-  padding: 24px;
+  padding: 16px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 #infobox h3 {
-  font-size: 12px;
+  font-family: Helvetica;
+  line-height: normal;
+  font-size: 16px;
+  text-align: center;
+  color: #343430;
 }
 
 #infobox p {
+  font-family: Helvetica;
   line-height: 24px;
   font-size: 14px;
+  text-align: justify;
   letter-spacing: 0.06em;
+
+  color: #000000;
 }
 
 .bt-animtest {
