@@ -92,15 +92,17 @@ html {
   align-items: center;
   font-family: Helvetica;
   color: #595755;
-  line-height: 1.2;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
 
+  // A Brief History of
   p {
     font-size: 36px;
-    letter-spacing: 0.06em;
     text-align: center;
     font-weight: light;
     font-style: italic;
 
+    // Human Civilization
     span {
       font-size: 61px;
       font-weight: bold;
@@ -127,28 +129,6 @@ html {
     letter-spacing: 0.06em;
     color: white;
   }
-}
-
-h1.page-title  {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: 10;
-  font-style: italic;
-  line-height: normal;
-  font-size: 36px;
-  text-align: center;
-  color: #595755;
-  margin: 57px 0px 0px 0px;
-}
-
-h2.page-subtitle  {
-  font-family: Helvetica;
-  line-height: normal;
-  font-style: italic;
-  font-size: 61px;
-  text-align: center;
-  letter-spacing: 0.06em;
-  color: #595755;
-  margin: 0px 0px 0px 0px;
 }
 
 .label-start {
