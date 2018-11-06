@@ -91,6 +91,7 @@ class Timeline {
     events.forEach(event => {
       this._RenderBubble(event, rad_new, 2, event._bubble.position);
       event._bubble.position.y = this._line.position.y;
+      event._date_label.position.y = event._bubble.position.y + this._bubble_rad_cur + 20;
     });
 
     // settle collisions
@@ -108,9 +109,11 @@ class Timeline {
       if (dist < this._bubble_dia_max) {
         if (events[i-1]._bubble.position.y == this._line.position.y) {
           events[i-1]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
+          events[i-1]._date_label.position.y = events[i-1]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);
           dir = !dir;
         }
         events[i]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
+        events[i]._date_label.position.y = events[i]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);;
         dir = !dir;
       }
     }
@@ -157,7 +160,7 @@ class Timeline {
     // set date label
     timepoint._date_label.text = timepoint.date.toStringType(this._date_type);
     timepoint._date_label.position = timepoint._bubble.position;
-    timepoint._date_label.position.y += 30;
+    timepoint._date_label.position.y = timepoint._bubble.position.y + this._bubble_rad_cur + 20;
     timepoint._date_label.alpha = 0;
 
     // date label collision check
@@ -240,8 +243,8 @@ class Timeline {
   //
   _CreateLabel() {
     let label = new PIXI.Text('', new PIXI.TextStyle({
-      fontFamily: "Arial",
-      fontSize: 11
+      fontFamily: "Helvetica",
+      fontSize: 13
     }));
     label.anchor.set(0.5, 0.5);
     return label;
