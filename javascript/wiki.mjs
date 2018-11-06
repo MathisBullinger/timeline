@@ -16,7 +16,7 @@ class Wiki {
   }
 
   static GetImage(wiki_ref, callback) {
-    let query = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&pithumbsize=100&titles='
+      let query = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&pithumbsize=500&titles='
     query += wiki_ref;
     jsonp(query, result => {
       const img = result.query.pages[Object.keys(result.query.pages)[0]].thumbnail.source;

@@ -272,6 +272,7 @@ class Timeline {
   //
   _OpenInfoBox(event) {
     this._CloseTitleBox();
+    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
     // set title
     $("#infobox > h1").html(event.name);
     $("#infobox > p").html("loading description...");
