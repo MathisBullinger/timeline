@@ -51,8 +51,6 @@ class Timeline {
     for (let event of this._events) {
       event._bubble.position.x = this._GetDatePosition(event.date).x;
       event._date_label.position.x = event._bubble.position.x;
-      event._name_label.position.x = event._bubble.position.x;
-      event._name_label.visible = false;
       this.HideCollidingDates();
       $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
       $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
@@ -152,7 +150,6 @@ class Timeline {
     this._events.push(timepoint);
 
     timepoint._date_label = this._CreateLabel();
-    timepoint._name_label = this._CreateLabel();
 
     // add bubble
     this._RenderBubble(timepoint, 20, 2, this._GetDatePosition(timepoint.date));
@@ -163,12 +160,6 @@ class Timeline {
     timepoint._date_label.position.y += 30;
     timepoint._date_label.alpha = 0;
 
-    // set name label
-    timepoint._name_label.text = timepoint.name;
-    timepoint._name_label.position = timepoint._bubble.position;
-    timepoint._name_label.position.y -= 30;
-    timepoint._name_label.visible = false;
-
     // date label collision check
     if (this._events.length >= 2) {
       let l1 = timepoint._date_label;
@@ -178,7 +169,7 @@ class Timeline {
       }
     }
 
-    app.stage.addChild(timepoint._date_label, timepoint._name_label);
+    app.stage.addChild(timepoint._date_label);
   }
 
   //
@@ -257,35 +248,12 @@ class Timeline {
   }
 
   //
-  // Handle Click
-  //
-  HandleClick(mousepos) {
-    let hit = undefined;
-    for (let event of this._events) {
-      const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
-      if (dist <= event._bubble.width / 2) {
-        hit = event;
-        break;
-      }
-    }
-    if (hit) {
-      this._SetSplit(hit.date);
-      this._OpenInfoBox(hit);
-    }
-    else {
-      this._RemoveSplit();
-      this._HideInfoBox();
-    }
-    this.Resize();
-  }
-
-  //
   // open title-box
   //
   _OpenTitleBox(event) {
     $(".hero h1").html(event.name);
-    $(".hero").css("top", event._name_label.position.y - ($(".hero").outerHeight() / 2) - 85);
-    $(".hero").css("left", event._name_label.position.x - $(".hero").outerWidth() / 2);
+    $(".hero").css("top", event._bubble.position.y - ($(".hero").outerHeight() / 2) - 85);
+    $(".hero").css("left", event._bubble.position.x - $(".hero").outerWidth() / 2);
     $(".hero").show();
   }
 
@@ -326,6 +294,16 @@ class Timeline {
     $("#infobox").hide();
   }
 
+
+  /*
+███████ ██    ██ ███████ ███    ██ ████████ ███████
+██      ██    ██ ██      ████   ██    ██    ██
+█████   ██    ██ █████   ██ ██  ██    ██    ███████
+██       ██  ██  ██      ██  ██ ██    ██         ██
+███████   ████   ███████ ██   ████    ██    ███████
+*/
+
+
   //
   // Update date visibility on mouse move
   //
@@ -336,19 +314,50 @@ class Timeline {
       // set date visibility
       event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
       // precheck dx to avoid sqrt
-      if (dx > event._bubble.width / 2) {
-        event._name_label.visible = false
+      if (dx > event._bubble.width / 2)
         continue;
-      }
       // show nametag if hover
       const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
-      if (dist <= event._bubble.width / 2) {
+      if (dist <= this._bubble_rad_cur) {
         this._OpenTitleBox(event);
       } else {
         this._CloseTitleBox();
       }
     }
   }
+
+  //
+  // Handle Click
+  //
+  HandleClick(mousepos) {
+    let hit = undefined;
+    for (let event of this._events) {
+      const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
+      if (dist <= event._bubble.width / 2) {
+        hit = event;
+        break;
+      }
+    }
+    if (hit) {
+      this._SetSplit(hit.date);
+      this._OpenInfoBox(hit);
+    }
+    else {
+      this._RemoveSplit();
+      this._HideInfoBox();
+    }
+    this.Resize();
+  }
+
+
+  /*
+███████  ██████   ██████  ███    ███        ██        ███████  ██████ ██████   ██████  ██      ██
+   ███  ██    ██ ██    ██ ████  ████        ██        ██      ██      ██   ██ ██    ██ ██      ██
+  ███   ██    ██ ██    ██ ██ ████ ██     ████████     ███████ ██      ██████  ██    ██ ██      ██
+ ███    ██    ██ ██    ██ ██  ██  ██     ██  ██            ██ ██      ██   ██ ██    ██ ██      ██
+███████  ██████   ██████  ██      ██     ██████       ███████  ██████ ██   ██  ██████  ███████ ███████
+*/
+
 
   //
   // Zoom
@@ -473,36 +482,4 @@ class Timeline {
 
   }
 
-}
-
-//
-// structure wiki article data
-//
-function FetchWikiComment(ref, callback) {
-  let base_url = 'http://';
-  //base_url += 'www.wikiwand.com/en/';
-  base_url += 'en.wikipedia.org/wiki/';
-  console.log('load wiki', base_url + ref);
-  FetchFile(encodeURI(base_url + ref), function(response) {
-
-    let data = $($($.parseHTML(response)).find('.mw-parser-output').find('p:not([class])').get(0)).text();
-    console.log(data);
-    callback(data);
-    return;
-
-  });
-}
-
-function FetchFile(file, callback) {
-  var request = new XMLHttpRequest();
-    request.open('GET', 'https://cors.io/?' + file, true);
-    request.send(null);
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && request.status === 200) {
-        var type = request.getResponseHeader('Content-Type');
-        if (type.indexOf("text") !== 1) {
-          callback(request.responseText);
-        }
-      }
-    }
 }
