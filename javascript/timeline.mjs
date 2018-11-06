@@ -296,7 +296,6 @@ class Timeline {
     // image
     Wiki.GetImage(event.wiki_ref, img => {
       $('#infobox-image').attr('src', img);
-      console.log(img);
     });
   }
 
@@ -324,16 +323,10 @@ class Timeline {
       const dx = Math.abs(mousepos.x - event._bubble.position.x);
       // set date visibility
       event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
-      // precheck dx to avoid sqrt
-      if (dx > event._bubble.width / 2)
-        continue;
       // show nametag if hover
       const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
-      if (dist <= this._bubble_rad_cur) {
+      if (dist <= this._bubble_rad_cur)
         this._OpenTitleBox(event);
-      } else {
-        this._CloseTitleBox();
-      }
     }
   }
 

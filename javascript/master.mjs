@@ -55,7 +55,6 @@ $('.bt-animtest').click(_ => {
 //
 $('.onoffswitch-checkbox').click(_ => {
   const type_new = $('.date-type').text() == 'Holocene' ? 'Gregorian' : 'Holocene';
-  console.log(type_new);
   $('.date-type').text(type_new);
   timeline.SetDateType(type_new);
 })
