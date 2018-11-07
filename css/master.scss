@@ -3,6 +3,7 @@ html {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 #timeline {
@@ -76,10 +77,18 @@ html {
 }
 
 .bt-animtest {
-  position: relative;
+  position: absolute;
   width: 50;
   height: 20px;
   z-index: 500;
+}
+
+.bt-date-toggle {
+  position: absolute;
+  width: 50;
+  height: 20;
+  z-index: 500;
+  transform: translateX(-100%) translateX(100vw);
 }
 
 .timeline-title {
@@ -91,15 +100,19 @@ html {
   align-items: center;
   font-family: Helvetica;
   color: #595755;
+  line-height: 1.2;
 
   p {
     font-size: 36px;
     letter-spacing: 0.06em;
     text-align: center;
-    line-height: 1.4;
+    font-weight: light;
+    font-style: italic;
 
     span {
       font-size: 61px;
+      font-weight: bold;
+      font-style: italic;
     }
   }
 }
@@ -114,7 +127,8 @@ html {
   z-index: 100;
 
   p {
-    font-family: Helvetica;
+    //font-family: Helvetica;
+
     line-height: normal;
     font-size: 16px;
     text-align: center;
@@ -213,4 +227,42 @@ h2.page-subtitle  {
 }
 ::-webkit-scrollbar-thumb:window-inactive {
 background: #6f6f6f;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

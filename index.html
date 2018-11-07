@@ -5,12 +5,15 @@
     <meta charset="utf-8">
     <title>Timeline</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/min/master.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="css/min/master.css">
   </head>
   <body>
 
+    <!-- Timeline Wrapper -->
     <div id="timeline"></div>
+
+    <!-- Infobox -->
     <div class='infobox' id="infobox">
       <h1 class='infobox-title'>Default</h1>
       <img id="infobox-image" width="200" src="https://via.placeholder.com/150" alt="event picture">
@@ -19,12 +22,18 @@
     <div class="hero">
       <h1>hero</h1>
     </div>
+
+    <!-- Title -->
     <div class="timeline-title">
-      <h1 class="page-title">A Brief History of<h1>
+      <h1 class="page-title">A Brief History of</h1>
       <h2 class="page-subtitle">Human Civilization</h2>
-      <!-- <p class='title-main'>Human Civilization</p> -->
     </div>
-    <button class='bt-animtest'>Scroll Test</button>
+
+    <!-- Buttons -->
+    <button class="bt-animtest">Scroll Test</button>
+    <button class="bt-date-toggle">Gregorian</button>
+
+    <!-- Date Labels -->
     <div class="date-label label-start">
       <p>start date</p>
     </div>
@@ -32,6 +41,18 @@
       <p>end date</p>
     </div>
 
+    <!-- The Modal -->
+    <div id="explanation-modal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+      </div>
+
+    </div>
+
+    <!-- Scripts -->
     <script src="javascript/util/jquery.min.js" charset="utf-8"></script>
     <script src="javascript/util/pixi.js" charset="utf-8"></script>
     <script type="module" src="javascript/master.mjs" charset="utf-8"></script>
