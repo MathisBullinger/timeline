@@ -59,6 +59,10 @@ class Timeline {
       this.FitBubbles();
       this._last_fit = now;
     }
+    // update minimap
+    const zoom = (this.date_last.year - this.date_first.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
+    const left = (this.date_first.year - this._scroll_min.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
+    $('.minimap > .select').css({width: zoom, 'margin-left': left});
   }
 
   //

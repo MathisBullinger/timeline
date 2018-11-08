@@ -15,6 +15,25 @@ html {
   cursor: crosshair;
 }
 
+.minimap {
+  position: absolute;
+  left: 25vw;
+  top: 90vh;
+  height: 5px;
+  width: 50vw;
+  z-index: 500;
+  background-color: rgba(196, 196, 196, 0.64);
+  border-radius: 4px;
+
+  .select {
+    width: 100%;
+    height: 19px;
+    margin-top: -7px;
+    background: rgba(220, 81, 106, 0.3);
+    border-radius: 2px;
+  }
+}
+
 .phoneblock {
   position: absolute;
   width: 100vw;
@@ -64,7 +83,6 @@ html {
   font-size: 14px;
   text-align: justify;
   letter-spacing: 0.06em;
-
   color: #000000;
 }
 
@@ -79,7 +97,6 @@ html {
   height: 20px;
   z-index: 500;
 }
-
 
 #page-title {
   position: absolute;
@@ -278,6 +295,7 @@ html {
   display: none;
   flex-direction: column;
   align-items: center;
+
   #explanation-box {
     padding-top: 115px;
     padding-bottom: 115px;
@@ -288,6 +306,7 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     > p {
       width: 712px;
       font-family: Helvetica;
@@ -296,12 +315,13 @@ html {
       letter-spacing: 0.06em;
       color: #595755;
     }
+
     > div#close-explanation-box {
       //button style
       width: 226px;
       height: 49px;
       background: #DC516A;
-      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
       border-radius: 24.5px;
       cursor: pointer;
       transition: all 0.4s ease;
@@ -313,15 +333,14 @@ html {
       text-align: center;
       letter-spacing: 0.06em;
       color: #FFFFFF;
+
       &:hover {
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
       }
     }
   }
 }
-
 // checkbox
-
 /* Customize the label (the container) */
 .container {
   display: block;
@@ -341,7 +360,6 @@ html {
   letter-spacing: 0.06em;
   color: #595755;
 }
-
 /* Hide the browser's default checkbox */
 .container input {
   position: absolute;
@@ -350,7 +368,6 @@ html {
   height: 0;
   width: 0;
 }
-
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
@@ -360,29 +377,24 @@ html {
   width: 25px;
   background-color: #eee;
 }
-
 /* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
   background-color: #ccc;
 }
-
 /* When the checkbox is checked, add a red background */
 .container input:checked ~ .checkmark {
   background-color: #DC516A;
 }
-
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
-
 /* Show the checkmark when checked */
 .container input:checked ~ .checkmark:after {
   display: block;
 }
-
 /* Style the checkmark/indicator */
 .container .checkmark:after {
   left: 9px;
