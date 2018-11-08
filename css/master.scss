@@ -52,16 +52,20 @@ html {
   line-height: normal;
   // text-align: center;
   color: #343430;
-  padding: 24px;
+  padding: 16px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 
 #infobox p {
+  font-family: Helvetica;
   line-height: 24px;
   font-size: 14px;
+  text-align: justify;
   letter-spacing: 0.06em;
+
+  color: #000000;
 }
 
 .infobox-title {
@@ -76,13 +80,17 @@ html {
   z-index: 500;
 }
 
-.timeline-title {
+
+#page-title {
   position: absolute;
   z-index: 100;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.timeline-title {
   font-family: Helvetica;
   color: #595755;
   line-height: 1.4;
@@ -253,4 +261,137 @@ html {
 .onoffswitch-checkbox:checked + .onoffswitch-label:before {
   right: 0;
   background-color: #595755;
+}
+
+#modal {
+  //brint to front
+  position: absolute;
+  z-index: 999;
+  //full-width background
+  width: 100%;
+  height: 100%;
+  margin-top: -25px;
+  background-color: grey;
+  background: rgba(0, 0, 0, 0.6);
+  padding-top: 24px;
+  // center
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  #explanation-box {
+    padding-top: 115px;
+    padding-bottom: 115px;
+    width: 80%;
+    background: #E5E5E5;
+    text-align: center;
+    // center horicontally
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > p {
+      width: 712px;
+      font-family: Helvetica;
+      line-height: 32px;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      color: #595755;
+    }
+    > div#close-explanation-box {
+      //button style
+      width: 226px;
+      height: 49px;
+      background: #DC516A;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
+      border-radius: 24.5px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      //font style
+      height: 100%;
+      line-height: 49px;
+      font-family: Helvetica;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 0.06em;
+      color: #FFFFFF;
+      &:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      }
+    }
+  }
+}
+
+// checkbox
+
+/* Customize the label (the container) */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  //text styling
+  font-family: Helvetica;
+  line-height: 32px;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  color: #595755;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a red background */
+.container input:checked ~ .checkmark {
+  background-color: #DC516A;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

@@ -8,6 +8,7 @@ import { interaction } from './interaction.mjs'
 MobileWarning();
 InitPixi();
 SayHello();
+OpenExplanationModal();
 
 let timeline = new Timeline();
 interaction.start(timeline);
@@ -97,4 +98,60 @@ function LoadJSON(file, callback) {
     }
   };
   xobj.send(null);
+}
+
+//
+// open explanation modal
+//
+function OpenExplanationModal() {
+  if (ShowExplanationPage()) {
+    //show modal
+    $("#modal").css("display", "flex");
+    // register close event
+    $("#close-explanation-box").click(function () {
+      DontShowMeAgain();
+      CloseExplanationModal();
+    })
+  }
+}
+
+//
+// close explanation modal
+//
+function CloseExplanationModal() {
+    $( "#explanation-box" ).fadeOut( "slow", function() {
+      $("#modal").hide();
+    });
+}
+
+
+//
+// show explanation page or not
+//
+function ShowExplanationPage () {
+  if(getCookie("no-explanation")) return false;
+  return true
+}
+
+//
+// dont show me again
+//
+function DontShowMeAgain () {
+  if ($("#dont-show-me-again").prop( "checked" )) {
+    // set cookie that you decided to hide the explanation page
+    setCookie("no-explanation", 1);
+  }
+}
+
+
+// Cookie functions
+function setCookie(key, value) {
+    var expires = new Date();
+    expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+    document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+}
+
+function getCookie(key) {
+    var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+    return keyValue ? keyValue[2] : null;
 }

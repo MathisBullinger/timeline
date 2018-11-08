@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run scss-compile",
-    "scss-compile": "node-sass -rw css/ -o css/min/ --output-style compressed",
+    "scss-compile": "node-sass -rw css/*.scss -o css/min/ --output-style compressed",
     "watch": "npm run scss-compile"
   },
   "repository": {
