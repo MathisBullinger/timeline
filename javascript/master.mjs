@@ -29,6 +29,10 @@ LoadJSON('data/events.json', data => {
 
 });
 
+$('.infobox-size-toggle').click(_ => {
+  $('.infobox').toggleClass('infobox-extended');
+});
+
 //
 // Test Animation
 //

@@ -1,4 +1,3 @@
-
 .infobox {
   position: fixed;
   display: none;
@@ -34,5 +33,35 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .infobox-size-toggle {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    // position: relative;
+    // top: -10px;
+    // left: -10px;
+    // margin-bottom: -30px;
+    background: url("../../data/icon/info-extend.svg");
+    background-size: 100% 100%;
+  }
+}
+
+.infobox-extended {
+  position: absolute !important;
+  left: 25vw !important;
+  top: 5vh !important;
+  width: 50vw !important;
+  height: 90vh !important;
+  padding-left: 5em !important;
+  padding-right: 5em !important;
+  transition: all 0.2s ease;
+
+  .infobox-size-toggle {
+    background: url("../../data/icon/info-shrink.svg");
+    background-size: 100% 100%;
   }
 }
