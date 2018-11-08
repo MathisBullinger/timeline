@@ -294,36 +294,36 @@ class Timeline {
   //
   _OpenInfoBox(event) {
     this._CloseTitleBox();
-    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
+    $('.infobox-image').attr('src', 'https://via.placeholder.com/150')
     // set title
-    $("#infobox > h1").html(event.name);
-    $("#infobox > p").html("loading description...");
-    $("#infobox").css({width: '100px', height: '100px'});
-    let left = this._split_pos - $('#infobox').outerWidth() / 2;
-    let top = this._line.position.y - $('#infobox').outerHeight() / 2;
-    $("#infobox").css({left: left, top: top});
+    $(".infobox > h1").html(event.name);
+    $(".infobox > p").html("loading description...");
+    $(".infobox").css({width: '100px', height: '100px'});
+    let left = this._split_pos - $('.infobox').outerWidth() / 2;
+    let top = this._line.position.y - $('.infobox').outerHeight() / 2;
+    $(".infobox").css({left: left, top: top});
     // show infobox
-    $("#infobox").show();
-    $('#infobox').animate({
-      left: left - (250 - $('#infobox').outerWidth()) / 2,
-      top: top - (250 - $('#infobox').outerHeight()) / 2,
-      width: '250px',
-      height: '250px'
+    $(".infobox").show();
+    $('.infobox').animate({
+      left: left - (300 - $('.infobox').outerWidth()) / 2,
+      top: top - (300 - $('.infobox').outerHeight()) / 2,
+      width: '300px',
+      height: '300px'
     }, 200);
 
     Wiki.GetExtract(event.wiki_ref, extract => {
-      $('#infobox > p').text(extract);
+      $('.infobox > p').text(extract);
     });
 
     // image
     Wiki.GetImage(event.wiki_ref, img => {
-      $('#infobox-image').attr('src', img);
+      $('.infobox-image').attr('src', img);
     });
   }
 
   _HideInfoBox() {
-    $("#infobox").hide();
-    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
+    $(".infobox").hide();
+    $('.infobox-image').attr('src', 'https://via.placeholder.com/150')
   }
 
 

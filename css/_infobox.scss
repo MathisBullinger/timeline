@@ -1,0 +1,38 @@
+
+.infobox {
+  position: fixed;
+  display: none;
+  padding: 12px;
+  z-index: 999;
+  background: #E7E4DC;
+  border: 2px solid #595755;
+  box-sizing: border-box;
+  border-radius: 3px;
+  font-family: Helvetica;
+  line-height: normal;
+  color: #343430;
+  padding: 1em;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  p {
+    font-family: Helvetica;
+    line-height: 24px;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: #000000;
+  }
+
+  .infobox-title {
+    text-align: center;
+    margin-top: 0;
+  }
+
+  .infobox-image {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
