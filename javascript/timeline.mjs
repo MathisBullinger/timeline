@@ -276,17 +276,17 @@ class Timeline {
   // open title-box
   //
   _OpenTitleBox(event) {
-    $(".hero h1").html(event.name);
-    $(".hero").css("top", event._bubble.position.y - ($(".hero").outerHeight() / 2) - 85);
-    $(".hero").css("left", event._bubble.position.x - $(".hero").outerWidth() / 2);
-    $(".hero").show();
+    $(".nametag h1").html(event.name);
+    $(".nametag").css("top", event._bubble.position.y - ($(".nametag").outerHeight() / 2) - 85);
+    $(".nametag").css("left", event._bubble.position.x - $(".nametag").outerWidth() / 2);
+    $(".nametag").show();
   }
 
   //
   // close title-box
   //
   _CloseTitleBox(event) {
-    $(".hero").hide();
+    $(".nametag").hide();
   }
 
   //
@@ -434,7 +434,7 @@ class Timeline {
   }
 
   _GetZoomStep(speed_mult = 1) {
-    return (this.date_last.year - this.date_first.year) / 200 * -speed_mult;
+    return (this.date_last.year - this.date_first.year) / 400 * -speed_mult;
   }
   _GetZoomBias(zoom_target) {
     return (zoom_target.year - this.date_first.year) / (this.date_last.year - this.date_first.year);

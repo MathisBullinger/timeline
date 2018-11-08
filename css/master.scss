@@ -6,6 +6,15 @@ html {
   font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 #timeline {
   position: absolute;
   top: 0;
@@ -154,7 +163,7 @@ html {
   transform: translateX(-100%) translateX(98vw);
 }
 
-.hero {
+.nametag {
   position: fixed;
   background-color: #e15915;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -165,52 +174,51 @@ html {
   padding: 12px;
   display: none;
   z-index: 999;
-}
 
-.hero h1 {
-  color: #FFFFFF;
-  padding: 0;
-  margin: 0;
-  font-family: Helvetica;
-  line-height: 90px;
-  font-size: 16px;
-  text-align: center;
-}
+  h1 {
+    color: #FFFFFF;
+    padding: 0;
+    margin: 0;
+    font-family: Helvetica;
+    line-height: 90px;
+    font-size: 16px;
+    text-align: center;
+  }
 
-.hero:after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -10px;
-  width: 0;
-  height: 0;
-  border-top: solid 10px #343430;
-  border-left: solid 10px transparent;
-  border-right: solid 10px transparent;
-}
-// -webkit-scrollbar
+  &:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-top: solid 10px #343430;
+    border-left: solid 10px transparent;
+    border-right: solid 10px transparent;
+  }
 
-::-webkit-scrollbar {
-  width: 8px;
-  padding: 12px;
-  cursor: pointer;
-  background-color: #fafafa;
-}
-/* Track */
-::-webkit-scrollbar-track {
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-/* Handle */
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  background: #333;
-}
+  ::-webkit-scrollbar {
+    width: 8px;
+    padding: 12px;
+    cursor: pointer;
+    background-color: #fafafa;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #333;
+  }
 
-::-webkit-scrollbar-thumb:window-inactive {
-  background: #6f6f6f;
+  ::-webkit-scrollbar-thumb:window-inactive {
+    background: #6f6f6f;
+  }
 }
 
 .switch-date-wrap {
