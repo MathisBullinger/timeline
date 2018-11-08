@@ -39,7 +39,6 @@ html {
   }
 }
 
-
 #infobox {
   position: fixed;
   display: none;
@@ -51,19 +50,12 @@ html {
   border-radius: 3px;
   font-family: Helvetica;
   line-height: normal;
-  text-align: center;
+  // text-align: center;
   color: #343430;
   padding: 16px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
-}
-#infobox h3 {
-  font-family: Helvetica;
-  line-height: normal;
-  font-size: 16px;
-  text-align: center;
-  color: #343430;
 }
 
 #infobox p {
@@ -76,19 +68,16 @@ html {
   color: #000000;
 }
 
+.infobox-title {
+  text-align: center;
+  margin-top: 0;
+}
+
 .bt-animtest {
   position: absolute;
   width: 50;
   height: 20px;
   z-index: 500;
-}
-
-.bt-date-toggle {
-  position: absolute;
-  width: 50;
-  height: 20;
-  z-index: 500;
-  transform: translateX(-100%) translateX(100vw);
 }
 
 .timeline-title {
@@ -100,15 +89,15 @@ html {
   align-items: center;
   font-family: Helvetica;
   color: #595755;
-  line-height: 1.2;
-
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  // A Brief History of
   p {
     font-size: 36px;
-    letter-spacing: 0.06em;
     text-align: center;
     font-weight: light;
     font-style: italic;
-
+    // Human Civilization
     span {
       font-size: 61px;
       font-weight: bold;
@@ -127,8 +116,6 @@ html {
   z-index: 100;
 
   p {
-    //font-family: Helvetica;
-
     line-height: normal;
     font-size: 16px;
     text-align: center;
@@ -137,31 +124,10 @@ html {
   }
 }
 
-h1.page-title  {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: 10;
-  font-style: italic;
-  line-height: normal;
-  font-size: 36px;
-  text-align: center;
-  color: #595755;
-  margin: 57px 0px 0px 0px;
-}
-
-h2.page-subtitle  {
-  font-family: Helvetica;
-  line-height: normal;
-  font-style: italic;
-  font-size: 61px;
-  text-align: center;
-  letter-spacing: 0.06em;
-  color: #595755;
-  margin: 0px 0px 0px 0px;
-}
-
 .label-start {
   background: url("../../data/icon/date_start_label.svg");
 }
+
 .label-end {
   background: url("../../data/icon/date_end_label.svg");
   transform: translateX(-100%) translateX(98vw);
@@ -170,7 +136,7 @@ h2.page-subtitle  {
 .hero {
   position: fixed;
   background-color: #e15915;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 2px;
   background: #343430;
   width: 250px;
@@ -182,8 +148,8 @@ h2.page-subtitle  {
 
 .hero h1 {
   color: #FFFFFF;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   font-family: Helvetica;
   line-height: 90px;
   font-size: 16px;
@@ -202,67 +168,103 @@ h2.page-subtitle  {
   border-left: solid 10px transparent;
   border-right: solid 10px transparent;
 }
-
-
 // -webkit-scrollbar
-/* Let's get this party started */
+
 ::-webkit-scrollbar {
   width: 8px;
   padding: 12px;
-  cursor:pointer;
+  cursor: pointer;
   background-color: #fafafa;
 }
-
 /* Track */
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 10px;
   border-radius: 10px;
 }
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   background: #333;
 }
+
 ::-webkit-scrollbar-thumb:window-inactive {
-background: #6f6f6f;
+  background: #6f6f6f;
 }
 
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+.switch-date-wrap {
+  position: absolute;
+  z-index: 500;
+  top: 5vh;
+  transform: translateX(-100%) translateX(95vw);
+  width: 55px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  p {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    margin-left: -20px;
+    margin-right: -20px;
+    text-align: center;
+    font-size: 10px;
+  }
 }
 
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+.onoffswitch-checkbox {
+  display: none;
 }
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.onoffswitch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  height: 20px;
+  padding: 0;
+  line-height: 20px;
+  border: 0 solid #FFFFFF;
+  border-radius: 30px;
+  background-color: #CCCCCC;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.onoffswitch-label:before {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: -5px;
+  background: #595755;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 31px;
+  border-radius: 30px;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label {
+  background-color: #97FF8B;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label,
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+  border-color: #97FF8B;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+  right: 0;
+  background-color: #595755;
+}
+
+#modal {
+  z-index: 999;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.7)
+  ),
+  /* bottom, image */
+  url(http://fc02.deviantart.net/fs71/i/2011/274/6/f/ocean__sky__stars__and_you_by_muddymelly-d4bg1ub.png);
 }

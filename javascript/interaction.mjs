@@ -1,5 +1,5 @@
 
-export { interaction };
+export { interaction, Throttle };
 import { Resize, Point } from './graphics.mjs';
 
 

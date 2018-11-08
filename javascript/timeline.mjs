@@ -15,7 +15,7 @@ class Timeline {
     this._pos_y = 1 / 1.618;
     this._events = [];
     this._line = new Graphics();
-    this._max_zoom = 500;
+    this._max_zoom = 250;
     this._min_zoom = this.date_last.year - this.date_first.year;
     this._scroll_min = this.date_first;
     this._scroll_max = this.date_last;
@@ -23,6 +23,10 @@ class Timeline {
     this._split_pos = 0;
     this._split_width = 250;
     this._date_type = 'holocene';
+    this._bubble_dia_min = 50;
+    this._bubble_dia_max = 120;
+    this._bubble_rad_cur = this._bubble_dia_max;
+    this._last_fit = new Date().getTime();
 
     // draw line
     this._line.lineStyle(4, color.line, 1);
@@ -33,7 +37,6 @@ class Timeline {
 
     // start & end date marker
     //
-    //let tmp_date = this._date_type == 'holocene' ? this._GetPositionDate(canvas.width / 100).holocene : this._GetPositionDate(canvas.width / 100).gregorian;
     $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
     $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
 
@@ -43,15 +46,76 @@ class Timeline {
   // Resize
   //
   Resize() {
+    let now = new Date().getTime();
     this._line.width = canvas.width;
     for (let event of this._events) {
-      event._bubble.position = this._GetDatePosition(event.date);
+      event._bubble.position.x = this._GetDatePosition(event.date).x;
       event._date_label.position.x = event._bubble.position.x;
-      event._name_label.position.x = event._bubble.position.x;
-      event._name_label.visible = false;
       this.HideCollidingDates();
       $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
       $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
+    }
+    if (now - this._last_fit > 100) {
+      this.FitBubbles();
+      this._last_fit = now;
+    }
+  }
+
+  //
+  // Fit Bubbles
+  //
+  FitBubbles() {
+    // get bubbles that are visible
+    const events = this._events.filter(event =>
+      event._bubble.position.x + this._bubble_rad_cur >= 0 ||
+      event._bubble.position.x - this._bubble_rad_cur <= canvas.width
+    );
+
+    // get minimum permitted diameter
+    let dist_min = this._bubble_dia_max;
+    let collide = false;
+    if (events.length >= 2) {
+      for (let i = 1; i < events.length; i ++) {
+        let dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
+        if (dist < dist_min && dist >= this._bubble_dia_min)
+          dist_min = dist;
+        else if (dist < this._bubble_dia_min)
+          collide = true;
+      }
+    }
+
+    const rad_new = collide ? this._bubble_dia_min : dist_min / 2;
+    this._bubble_rad_cur = rad_new;
+
+    // set new radius & reset y
+    events.forEach(event => {
+      this._RenderBubble(event, rad_new, 2, event._bubble.position);
+      event._bubble.position.y = this._line.position.y;
+      event._date_label.position.y = event._bubble.position.y + this._bubble_rad_cur + 20;
+    });
+
+    // settle collisions
+    if (collide) {
+      this._SolveBubbleCollisions(events);
+    }
+  }
+
+  _SolveBubbleCollisions(events) {
+    if (events.length < 2) return;
+    const off_y = this._bubble_rad_cur * 1.2;
+    let dir = true;
+    for (let i = 1; i < events.length; i++) {
+      const dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
+      if (dist < this._bubble_dia_max) {
+        if (events[i-1]._bubble.position.y == this._line.position.y) {
+          events[i-1]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
+          events[i-1]._date_label.position.y = events[i-1]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);
+          dir = !dir;
+        }
+        events[i]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
+        events[i]._date_label.position.y = events[i]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);;
+        dir = !dir;
+      }
     }
   }
 
@@ -88,28 +152,16 @@ class Timeline {
   AddEvent(timepoint) {
     this._events.push(timepoint);
 
-    timepoint._bubble = new Graphics();
     timepoint._date_label = this._CreateLabel();
-    timepoint._name_label = this._CreateLabel();
 
     // add bubble
-    timepoint._bubble.lineStyle(2, 0x000000, 1);
-    timepoint._bubble.beginFill(color.fill);
-    timepoint._bubble.drawCircle(0, 0, 20);
-    timepoint._bubble.endFill();
-    timepoint._bubble.position = this._GetDatePosition(timepoint.date);
+    this._RenderBubble(timepoint, 20, 2, this._GetDatePosition(timepoint.date));
 
     // set date label
     timepoint._date_label.text = timepoint.date.toStringType(this._date_type);
     timepoint._date_label.position = timepoint._bubble.position;
-    timepoint._date_label.position.y += 30;
+    timepoint._date_label.position.y = timepoint._bubble.position.y + this._bubble_rad_cur + 20;
     timepoint._date_label.alpha = 0;
-
-    // set name label
-    timepoint._name_label.text = timepoint.name;
-    timepoint._name_label.position = timepoint._bubble.position;
-    timepoint._name_label.position.y -= 30;
-    timepoint._name_label.visible = false;
 
     // date label collision check
     if (this._events.length >= 2) {
@@ -120,7 +172,21 @@ class Timeline {
       }
     }
 
-    app.stage.addChild(timepoint._bubble, timepoint._date_label, timepoint._name_label);
+    app.stage.addChild(timepoint._date_label);
+  }
+
+  //
+  // Render Bubble
+  //
+  _RenderBubble(event, radius, border_width, position) {
+    app.stage.removeChild(event._bubble);
+    event._bubble = new Graphics;
+    event._bubble.lineStyle(border_width, color.line, 1);
+    event._bubble.beginFill(color.fill);
+    event._bubble.drawCircle(0, 0, radius);
+    event._bubble.position = position;
+    event._bubble.endFill();
+    app.stage.addChild(event._bubble);
   }
 
   //
@@ -177,11 +243,91 @@ class Timeline {
   //
   _CreateLabel() {
     let label = new PIXI.Text('', new PIXI.TextStyle({
-      fontFamily: "Arial",
-      fontSize: 11
+      fontFamily: "Helvetica",
+      fontSize: 13
     }));
     label.anchor.set(0.5, 0.5);
     return label;
+  }
+
+  //
+  // open title-box
+  //
+  _OpenTitleBox(event) {
+    $(".hero h1").html(event.name);
+    $(".hero").css("top", event._bubble.position.y - ($(".hero").outerHeight() / 2) - 85);
+    $(".hero").css("left", event._bubble.position.x - $(".hero").outerWidth() / 2);
+    $(".hero").show();
+  }
+
+  //
+  // close title-box
+  //
+  _CloseTitleBox(event) {
+    $(".hero").hide();
+  }
+
+  //
+  // open & close info box
+  //
+  _OpenInfoBox(event) {
+    this._CloseTitleBox();
+    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
+    // set title
+    $("#infobox > h1").html(event.name);
+    $("#infobox > p").html("loading description...");
+    $("#infobox").css({width: '100px', height: '100px'});
+    let left = this._split_pos - $('#infobox').outerWidth() / 2;
+    let top = this._line.position.y - $('#infobox').outerHeight() / 2;
+    $("#infobox").css({left: left, top: top});
+    // show infobox
+    $("#infobox").show();
+    $('#infobox').animate({
+      left: left - (250 - $('#infobox').outerWidth()) / 2,
+      top: top - (250 - $('#infobox').outerHeight()) / 2,
+      width: '250px',
+      height: '250px'
+    }, 200);
+
+    Wiki.GetExtract(event.wiki_ref, extract => {
+      $('#infobox > p').text(extract);
+    });
+
+    // image
+    Wiki.GetImage(event.wiki_ref, img => {
+      $('#infobox-image').attr('src', img);
+    });
+  }
+
+  _HideInfoBox() {
+    $("#infobox").hide();
+    $('#infobox-image').attr('src', 'https://via.placeholder.com/150')
+  }
+
+
+  /*
+███████ ██    ██ ███████ ███    ██ ████████ ███████
+██      ██    ██ ██      ████   ██    ██    ██
+█████   ██    ██ █████   ██ ██  ██    ██    ███████
+██       ██  ██  ██      ██  ██ ██    ██         ██
+███████   ████   ███████ ██   ████    ██    ███████
+*/
+
+
+  //
+  // Update date visibility on mouse move
+  //
+  MouseMove(mousepos) {
+    this._CloseTitleBox();
+    for (let event of this._events) {
+      const dx = Math.abs(mousepos.x - event._bubble.position.x);
+      // set date visibility
+      event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
+      // show nametag if hover
+      const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
+      if (dist <= this._bubble_rad_cur)
+        this._OpenTitleBox(event);
+    }
   }
 
   //
@@ -207,76 +353,15 @@ class Timeline {
     this.Resize();
   }
 
-  //
-  // open title-box
-  //
-  _OpenTitleBox(event) {
-    $(".hero h1").html(event.name);
-    $(".hero").css("top", event._name_label.position.y - ($(".hero").outerHeight() / 2) - 85);
-    $(".hero").css("left", event._name_label.position.x - $(".hero").outerWidth() / 2);
-    $(".hero").show();
-  }
 
-  //
-  // close title-box
-  //
-  _CloseTitleBox(event) {
-    $(".hero").hide();
-  }
+  /*
+███████  ██████   ██████  ███    ███        ██        ███████  ██████ ██████   ██████  ██      ██
+   ███  ██    ██ ██    ██ ████  ████        ██        ██      ██      ██   ██ ██    ██ ██      ██
+  ███   ██    ██ ██    ██ ██ ████ ██     ████████     ███████ ██      ██████  ██    ██ ██      ██
+ ███    ██    ██ ██    ██ ██  ██  ██     ██  ██            ██ ██      ██   ██ ██    ██ ██      ██
+███████  ██████   ██████  ██      ██     ██████       ███████  ██████ ██   ██  ██████  ███████ ███████
+*/
 
-  //
-  // open & close info box
-  //
-  _OpenInfoBox(event) {
-    this._CloseTitleBox();
-    // set title
-    $("#infobox > h1").html(event.name);
-    $("#infobox > p").html("loading description...");
-    $("#infobox").css({width: '100px', height: '100px'});
-    let left = this._split_pos - $('#infobox').outerWidth() / 2;
-    let top = this._line.position.y - $('#infobox').outerHeight() / 2;
-    $("#infobox").css({left: left, top: top});
-    // show infobox
-    $("#infobox").show();
-    $('#infobox').animate({
-      left: left - (250 - $('#infobox').outerWidth()) / 2,
-      top: top - (250 - $('#infobox').outerHeight()) / 2,
-      width: '250px',
-      height: '250px'
-    }, 200);
-
-    Wiki.GetExtract(event.wiki_ref, extract => {
-      $('#infobox > p').text(extract);
-    });
-  }
-
-  _HideInfoBox() {
-    $("#infobox").hide();
-  }
-
-  //
-  // Update date visibility on mouse move
-  //
-  MouseMove(mousepos) {
-    this._CloseTitleBox();
-    for (let event of this._events) {
-      const dx = Math.abs(mousepos.x - event._bubble.position.x);
-      // set date visibility
-      event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
-      // precheck dx to avoid sqrt
-      if (dx > event._bubble.width / 2) {
-        event._name_label.visible = false
-        continue;
-      }
-      // show nametag if hover
-      const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
-      if (dist <= event._bubble.width / 2) {
-        this._OpenTitleBox(event);
-      } else {
-        this._CloseTitleBox();
-      }
-    }
-  }
 
   //
   // Zoom
@@ -401,36 +486,4 @@ class Timeline {
 
   }
 
-}
-
-//
-// structure wiki article data
-//
-function FetchWikiComment(ref, callback) {
-  let base_url = 'http://';
-  //base_url += 'www.wikiwand.com/en/';
-  base_url += 'en.wikipedia.org/wiki/';
-  console.log('load wiki', base_url + ref);
-  FetchFile(encodeURI(base_url + ref), function(response) {
-
-    let data = $($($.parseHTML(response)).find('.mw-parser-output').find('p:not([class])').get(0)).text();
-    console.log(data);
-    callback(data);
-    return;
-
-  });
-}
-
-function FetchFile(file, callback) {
-  var request = new XMLHttpRequest();
-    request.open('GET', 'https://cors.io/?' + file, true);
-    request.send(null);
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && request.status === 200) {
-        var type = request.getResponseHeader('Content-Type');
-        if (type.indexOf("text") !== 1) {
-          callback(request.responseText);
-        }
-      }
-    }
 }

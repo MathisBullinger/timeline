@@ -25,6 +25,7 @@ LoadJSON('data/events.json', data => {
     timeline.AddEvent(new chronos.Timepoint(name, date, wiki_ref));
   };
   timeline.LogTimepoints();
+  timeline.FitBubbles();
 
 });
 
@@ -53,9 +54,9 @@ $('.bt-animtest').click(_ => {
 //
 // Toggle Date
 //
-$('.bt-date-toggle').click(_ => {
-  const type_new = $('.bt-date-toggle').text();
-  $('.bt-date-toggle').text(type_new == 'Gregorian' ? 'Holocene' : 'Gregorian');
+$('.onoffswitch-checkbox').click(_ => {
+  const type_new = $('.date-type').text() == 'Holocene' ? 'Gregorian' : 'Holocene';
+  $('.date-type').text(type_new);
   timeline.SetDateType(type_new);
 })
 
@@ -106,4 +107,5 @@ function OpenExplanationModal() {
 
   //get modal
   //$("#explanation-modal").show();
+  $("#modal").show();
 }

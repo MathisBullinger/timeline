@@ -56,7 +56,6 @@ function Resize() {
   view.width = $('#timeline').width();
   view.height = $('#timeline').height();
   renderer.resize(view.width, view.height);
-  console.log(`resize to (${renderer.width}px, ${renderer.height}px)`);
 }
 
 //
