@@ -202,7 +202,7 @@ class Timeline {
   }
 
   //
-  // Print events to console
+  // Print Tabel of all events to the console
   //
   LogTimepoints() {
     let form_data = [];
@@ -221,19 +221,27 @@ class Timeline {
   //
   _GetDatePosition(date) {
     let pos_x = canvas.width / (this.date_last.year - this.date_first.year) * (date.year - this.date_first.year);
+    // adjust position if infobox is open
     if (this._split_date) {
       if (date.year < this._split_date.year) {
+        // event is to left of infobox
         pos_x = (this._split_pos - this._split_width / 2) / (this._split_date.year - this.date_first.year) * (date.year - this.date_first.year);
       } else if (date.year > this._split_date.year) {
+        // to the right
         const split = this._split_pos + this._split_width / 2;
         pos_x = split + (canvas.width - split) / (this.date_last.year - this._split_date.year) * (date.year - this._split_date.year);
       } else {
+        // event is infobox
         pos_x = this._split_pos;
       }
     }
     return new Point(Math.round(pos_x), Math.round(this._line.position.y));
 
   }
+
+  //
+  // Get Position Date
+  //
   _GetPositionDate(px) {
     return new chronos.Date(px / canvas.width * (this.date_last.year - this.date_first.year) + this.date_first.year);
   }
@@ -249,6 +257,16 @@ class Timeline {
     label.anchor.set(0.5, 0.5);
     return label;
   }
+
+
+  /*
+████████ ██ ████████ ██      ███████        ██        ██ ███    ██ ███████  ██████      ██████   ██████  ██   ██
+   ██    ██    ██    ██      ██             ██        ██ ████   ██ ██      ██    ██     ██   ██ ██    ██  ██ ██
+   ██    ██    ██    ██      █████       ████████     ██ ██ ██  ██ █████   ██    ██     ██████  ██    ██   ███
+   ██    ██    ██    ██      ██          ██  ██       ██ ██  ██ ██ ██      ██    ██     ██   ██ ██    ██  ██ ██
+   ██    ██    ██    ███████ ███████     ██████       ██ ██   ████ ██       ██████      ██████   ██████  ██   ██
+*/
+
 
   //
   // open title-box
