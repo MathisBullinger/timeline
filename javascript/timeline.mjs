@@ -322,7 +322,9 @@ class Timeline {
   }
 
   _HideInfoBox() {
-    $(".infobox").hide();
+    $('.infobox').get(0).scrollTop = 0;
+    $('.infobox').hide();
+    $('.infobox').removeClass('infobox-extended');
     $('.infobox-image').attr('src', 'https://via.placeholder.com/150')
   }
 

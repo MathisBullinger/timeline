@@ -41,10 +41,6 @@
     position: absolute;
     left: 0;
     top: 0;
-    // position: relative;
-    // top: -10px;
-    // left: -10px;
-    // margin-bottom: -30px;
     background: url("../../data/icon/info-extend.svg");
     background-size: 100% 100%;
   }
@@ -56,8 +52,8 @@
   top: 5vh !important;
   width: 50vw !important;
   height: 90vh !important;
-  padding-left: 5em !important;
-  padding-right: 5em !important;
+  padding-left: 4% !important;
+  padding-right: 4% !important;
   transition: all 0.2s ease;
 
   .infobox-size-toggle {
