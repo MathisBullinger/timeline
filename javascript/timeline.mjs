@@ -1,9 +1,10 @@
-
-import { app, Graphics, canvas, Point } from './graphics.mjs';
-import { chronos } from './chronos.mjs';
-import { Wiki } from './wiki.mjs';
-import { color } from './colors.mjs';
-export { Timeline };
+import {app, Graphics, canvas, Point} from './graphics.mjs';
+import {chronos} from './chronos.mjs';
+import {Wiki} from './wiki.mjs';
+import {color} from './colors.mjs';
+export {
+  Timeline
+};
 
 class Timeline {
   //
@@ -23,9 +24,8 @@ class Timeline {
     this._split_pos = 0;
     this._split_width = 250;
     this._date_type = 'holocene';
-    this._bubble_dia_min = 50;
-    this._bubble_dia_max = 120;
-    this._bubble_rad_cur = this._bubble_dia_max;
+    this._bubble_rad_min = 30;
+    this._bubble_rad_max = 120;
     this._last_fit = new Date().getTime();
 
     // draw line
@@ -65,62 +65,110 @@ class Timeline {
     $('.minimap > .select').css({width: zoom, 'margin-left': left});
   }
 
+  /*
+████████ ██ ███    ███ ███████ ██████   ██████  ██ ███    ██ ████████
+   ██    ██ ████  ████ ██      ██   ██ ██    ██ ██ ████   ██    ██
+   ██    ██ ██ ████ ██ █████   ██████  ██    ██ ██ ██ ██  ██    ██
+   ██    ██ ██  ██  ██ ██      ██      ██    ██ ██ ██  ██ ██    ██
+   ██    ██ ██      ██ ███████ ██       ██████  ██ ██   ████    ██
+*/
+
+  //
+  // Add event
+  //
+  AddEvent(timepoint) {
+    this._events.push(timepoint);
+
+    timepoint._date_label = this._CreateLabel();
+
+    // add bubble
+    this._RenderBubble(timepoint, this._bubble_rad_max, 2);
+
+    // set date label
+    timepoint._date_label.text = timepoint.date.toStringType(this._date_type);
+    timepoint._date_label.position = timepoint._bubble.position;
+    timepoint._date_label.position.y = timepoint._bubble.position.y + timepoint._bubble.radius + 15;
+    timepoint._date_label.alpha = 0;
+
+    // date label collision check
+    if (this._events.length >= 2) {
+      let l1 = timepoint._date_label;
+      let l2 = this._events[this._events.length - 2]._date_label;
+      if (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2) {
+        l1.visible = false;
+      }
+    }
+
+    app.stage.addChild(timepoint._date_label);
+  }
+
+  //
+  // Render Bubble
+  //
+  _RenderBubble(event, radius, border_width, position) {
+    app.stage.removeChild(event._bubble);
+    event._bubble = new Graphics;
+    event._bubble.lineStyle(border_width, color.line, 1);
+    event._bubble.beginFill(color.fill);
+    event._bubble.drawCircle(0, 0, radius);
+    event._bubble.position = this._GetDatePosition(event.date);
+    event._bubble.endFill();
+    app.stage.addChild(event._bubble);
+    event._bubble.radius = radius;
+  }
+
   //
   // Fit Bubbles
   //
   FitBubbles() {
-    // get bubbles that are visible
-    const events = this._events.filter(event =>
-      event._bubble.position.x + this._bubble_rad_cur >= 0 ||
-      event._bubble.position.x - this._bubble_rad_cur <= canvas.width
+    // select bubbles that are inside visible area
+    let events = this._events.filter(event =>
+      event._bubble.position.x + event._bubble.radius > 0 &&
+      event._bubble.position.x - event._bubble.radius < window.innerWidth
     );
 
-    // get minimum permitted diameter
-    let dist_min = this._bubble_dia_max;
-    let collide = false;
-    if (events.length >= 2) {
-      for (let i = 1; i < events.length; i ++) {
-        let dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
-        if (dist < dist_min && dist >= this._bubble_dia_min)
-          dist_min = dist;
-        else if (dist < this._bubble_dia_min)
-          collide = true;
-      }
+    if (events.length == 0)
+      return;
+    if (events.length == 1) {
+      this._RenderBubble(events[0], this._bubble_rad_max, 2)
+      return;
     }
 
-    const rad_new = collide ? this._bubble_dia_min : dist_min / 2;
-    this._bubble_rad_cur = rad_new;
-
-    // set new radius & reset y
-    events.forEach(event => {
-      this._RenderBubble(event, rad_new, 2, event._bubble.position);
-      event._bubble.position.y = this._line.position.y;
-      event._date_label.position.y = event._bubble.position.y + this._bubble_rad_cur + 20;
-    });
-
-    // settle collisions
-    if (collide) {
-      this._SolveBubbleCollisions(events);
-    }
-  }
-
-  _SolveBubbleCollisions(events) {
-    if (events.length < 2) return;
-    const off_y = this._bubble_rad_cur * 1.2;
-    let dir = true;
+    // check minimum distance
+    let dist_min = this._bubble_rad_max * 2;
+    let collisions = [];
     for (let i = 1; i < events.length; i++) {
       const dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
-      if (dist < this._bubble_dia_max) {
-        if (events[i-1]._bubble.position.y == this._line.position.y) {
-          events[i-1]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
-          events[i-1]._date_label.position.y = events[i-1]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);
-          dir = !dir;
-        }
-        events[i]._bubble.position.y = this._line.position.y + off_y * (dir ? 1 : -1);
-        events[i]._date_label.position.y = events[i]._bubble.position.y + (this._bubble_rad_cur + 20) * (dir ? 1 : -1);;
-        dir = !dir;
+      //console.log(dist);
+      if (dist < this._bubble_rad_min * 2) {
+        if (!collisions.includes(i-1))
+          collisions.push(i-1);
+        collisions.push(i);
+        continue;
+      }
+      else if (dist < dist_min) {
+        dist_min = dist;
       }
     }
+
+    // set non colliding bubbles to min distance
+    events.forEach(event => {
+      if (!collisions.includes(event))
+        this._RenderBubble(event, dist_min / 2, 2)
+    });
+
+    // create array of colliding events
+    collisions = collisions.map(e => events[e]);
+
+    // split collisions
+    const bubble_off = 40;
+    if (collisions.length > 0) {
+      for (let i in collisions) {
+        this._RenderBubble(collisions[i], this._bubble_rad_min, 2);
+        collisions[i]._bubble.position.y = this._line.position.y + bubble_off * (i % 2 ? 1 : -1);
+      }
+    }
+
   }
 
   //
@@ -150,58 +198,26 @@ class Timeline {
     this._split_date = undefined;
   }
 
-  //
-  // Add event
-  //
-  AddEvent(timepoint) {
-    this._events.push(timepoint);
-
-    timepoint._date_label = this._CreateLabel();
-
-    // add bubble
-    this._RenderBubble(timepoint, 20, 2, this._GetDatePosition(timepoint.date));
-
-    // set date label
-    timepoint._date_label.text = timepoint.date.toStringType(this._date_type);
-    timepoint._date_label.position = timepoint._bubble.position;
-    timepoint._date_label.position.y = timepoint._bubble.position.y + this._bubble_rad_cur + 20;
-    timepoint._date_label.alpha = 0;
-
-    // date label collision check
-    if (this._events.length >= 2) {
-      let l1 = timepoint._date_label;
-      let l2 = this._events[this._events.length - 2]._date_label;
-      if (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2) {
-        l1.visible = false;
-      }
-    }
-
-    app.stage.addChild(timepoint._date_label);
-  }
-
-  //
-  // Render Bubble
-  //
-  _RenderBubble(event, radius, border_width, position) {
-    app.stage.removeChild(event._bubble);
-    event._bubble = new Graphics;
-    event._bubble.lineStyle(border_width, color.line, 1);
-    event._bubble.beginFill(color.fill);
-    event._bubble.drawCircle(0, 0, radius);
-    event._bubble.position = position;
-    event._bubble.endFill();
-    app.stage.addChild(event._bubble);
-  }
+  /*
+██    ██ ████████ ██ ██      ██ ████████ ██    ██
+██    ██    ██    ██ ██      ██    ██     ██  ██
+██    ██    ██    ██ ██      ██    ██      ████
+██    ██    ██    ██ ██      ██    ██       ██
+ ██████     ██    ██ ███████ ██    ██       ██
+*/
 
   //
   // Hide Colliding Dates
   //
   HideCollidingDates() {
-    if (this._events.length < 2) return;
+    if (this._events.length < 2)
+      return;
     for (let i = 1; i < this._events.length; i++) {
       let l1 = this._events[this._events.length - 1]._date_label;
       let l2 = this._events[this._events.length - 2]._date_label;
-      l1.visible = (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2) ? false : true;
+      l1.visible = (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2)
+        ? false
+        : true;
     }
   }
 
@@ -254,14 +270,10 @@ class Timeline {
   // Create Date Label
   //
   _CreateLabel() {
-    let label = new PIXI.Text('', new PIXI.TextStyle({
-      fontFamily: "Helvetica",
-      fontSize: 13
-    }));
+    let label = new PIXI.Text('', new PIXI.TextStyle({fontFamily: "Helvetica", fontSize: 13}));
     label.anchor.set(0.5, 0.5);
     return label;
   }
-
 
   /*
 ████████ ██ ████████ ██      ███████        ██        ██ ███    ██ ███████  ██████      ██████   ██████  ██   ██
@@ -270,7 +282,6 @@ class Timeline {
    ██    ██    ██    ██      ██          ██  ██       ██ ██  ██ ██ ██      ██    ██     ██   ██ ██    ██  ██ ██
    ██    ██    ██    ███████ ███████     ██████       ██ ██   ████ ██       ██████      ██████   ██████  ██   ██
 */
-
 
   //
   // open title-box
@@ -301,6 +312,10 @@ class Timeline {
     $(".infobox").css({width: '100px', height: '100px'});
     let left = this._split_pos - $('.infobox').outerWidth() / 2;
     let top = this._line.position.y - $('.infobox').outerHeight() / 2;
+    if (left < 100)
+      left = 100;
+    if (left > window.innerWidth - 200)
+      left = window.innerWidth - 200;
     $(".infobox").css({left: left, top: top});
     // show infobox
     $(".infobox").show();
@@ -328,15 +343,12 @@ class Timeline {
     $('.infobox-image').attr('src', 'https://via.placeholder.com/150')
   }
 
-
   /*
 ███████ ██    ██ ███████ ███    ██ ████████ ███████
 ██      ██    ██ ██      ████   ██    ██    ██
 █████   ██    ██ █████   ██ ██  ██    ██    ███████
 ██       ██  ██  ██      ██  ██ ██    ██         ██
-███████   ████   ███████ ██   ████    ██    ███████
-*/
-
+███████   ████   ███████ ██   ████    ██    ███████ */
 
   //
   // Update date visibility on mouse move
@@ -346,13 +358,15 @@ class Timeline {
     for (let event of this._events) {
       const dx = Math.abs(mousepos.x - event._bubble.position.x);
       // set date visibility
-      event._date_label.alpha = dx < 150 ? (150 - Math.pow(dx, 1.2)) / 150 : 0;
+      event._date_label.alpha = dx < 150
+        ? (150 - Math.pow(dx, 1.2)) / 150
+        : 0;
       // show nametag if hover
       const dist = Math.sqrt(Math.pow(mousepos.x - event._bubble.position.x, 2) + Math.pow(mousepos.y - event._bubble.position.y, 2));
-      if (dist <= this._bubble_rad_cur)
+      if (dist <= event._bubble.radius)
         this._OpenTitleBox(event);
+      }
     }
-  }
 
   //
   // Handle Click
@@ -369,14 +383,12 @@ class Timeline {
     if (hit) {
       this._SetSplit(hit.date);
       this._OpenInfoBox(hit);
-    }
-    else {
+    } else {
       this._RemoveSplit();
       this._HideInfoBox();
     }
     this.Resize();
   }
-
 
   /*
 ███████  ██████   ██████  ███    ███        ██        ███████  ██████ ██████   ██████  ██      ██
@@ -385,7 +397,6 @@ class Timeline {
  ███    ██    ██ ██    ██ ██  ██  ██     ██  ██            ██ ██      ██   ██ ██    ██ ██      ██
 ███████  ██████   ██████  ██      ██     ██████       ███████  ██████ ██   ██  ██████  ███████ ███████
 */
-
 
   //
   // Zoom
@@ -427,9 +438,9 @@ class Timeline {
   _ScrollAdjust() {
     // keep in bounds
     if (this.date_first.year < this._scroll_min.year || this.date_last.year > this._scroll_max.year) {
-      let scroll_adjust = this.date_first.year < this._scroll_min.year ?
-        this._scroll_min.year - this.date_first.year :
-        this._scroll_max.year - this.date_last.year;
+      let scroll_adjust = this.date_first.year < this._scroll_min.year
+        ? this._scroll_min.year - this.date_first.year
+        : this._scroll_max.year - this.date_last.year;
       this.date_first = new chronos.Date(this.date_first.year + scroll_adjust);
       this.date_last = new chronos.Date(this.date_last.year + scroll_adjust);
     }
@@ -458,7 +469,7 @@ class Timeline {
     for (let i = 0; i < steps_total; i++) {
 
       const t = i / (steps_total - 1);
-      const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
+      const step = Math.pow(t, 2) / (2 * (Math.pow(t, 2) - t) + 1);
 
       const pos = start_date.year + (date.year - start_date.year) * step;
       const pos_delta = pos - pos_last;
@@ -472,9 +483,10 @@ class Timeline {
       pos_last = pos;
     }
 
-    if (on_done) setTimeout(on_done, duration);
+    if (on_done)
+      setTimeout(on_done, duration);
 
-  }
+    }
 
   //
   // Zoom To
@@ -488,10 +500,10 @@ class Timeline {
     for (let i = 0; i < steps_total; i++) {
 
       const t = i / (steps_total - 1);
-      const step = Math.pow(t, 2) / ( 2 * (Math.pow(t, 2) - t) + 1 );
+      const step = Math.pow(t, 2) / (2 * (Math.pow(t, 2) - t) + 1);
 
       let frame_new = start_frame + (timeframe - start_frame) * step;
-      let zoom_step =  frame_new - frame_last;
+      let zoom_step = frame_new - frame_last;
 
       setTimeout(step => {
         let frame_cur = this.date_last.year - this.date_first.year;
@@ -506,8 +518,9 @@ class Timeline {
       frame_last = frame_new;
     }
 
-    if (on_done) setTimeout(on_done, duration);
+    if (on_done)
+      setTimeout(on_done, duration);
 
-  }
+    }
 
 }
