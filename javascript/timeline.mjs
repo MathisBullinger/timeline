@@ -180,6 +180,12 @@ class Timeline {
       }
     }
 
+    // reposition date label
+    events.forEach(event => {
+      event._date_label.position.y = event._bubble.position.y +
+        (event._bubble.radius + 20) * (event._bubble.position.y >= this._line.position.y ? 1 : -1);
+    })
+
   }
 
   //
