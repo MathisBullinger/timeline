@@ -66,6 +66,11 @@ const interaction = {
     });
 
     //
+    // disable context menu
+    //
+    window.addEventListener('contextmenu', e => e.preventDefault());
+
+    //
     // Window Resize
     //
     $(window).resize(Debounce(_ => {
