@@ -225,17 +225,18 @@ html {
   cursor: pointer;
   height: 20px;
   padding: 0;
-  line-height: 20px;
+  line-height: 10px;
   border: 0 solid #FFFFFF;
   border-radius: 30px;
   background-color: #CCCCCC;
 }
 
 .onoffswitch-label:before {
+  transition-duration: 0.5s;
   content: "";
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   margin: -5px;
   background: #595755;
   position: absolute;
