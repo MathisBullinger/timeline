@@ -107,12 +107,13 @@ html {
   }
 }
 
+$date-label-offset: 0.025;
 .date-label {
   position: absolute;
   width: 178.5px;
   height: 40px;
   top: 80vh;
-  left: 1vw;
+  left: $date-label-offset * 100 + vw;
   background: #DC516A;
   z-index: 100;
   pointer-events: none;
@@ -132,7 +133,7 @@ html {
 
 .label-end {
   background: url("../../data/icon/date_end_label.svg");
-  transform: translateX(-100%) translateX(98vw);
+  transform: translateX(-100%) translateX(100 - $date-label-offset * 200 + vw);
 }
 
 .nametag {
