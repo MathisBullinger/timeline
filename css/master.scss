@@ -398,7 +398,7 @@ html {
   transition: all 0.4s ease;
   //font style
   height: 100%;
-  line-height: 49px;
+  line-height: 25px;
   font-family: Helvetica;
   font-size: 18px;
   text-align: center;
@@ -413,8 +413,10 @@ html {
 #start-journey {
   position: absolute;
   z-index: 500;
-  height: 49px;
-  width: 200px;
-  top: 250px;
-  left: calc(50% - 100px);
+  height: 25px;
+  width: 100px;
+  top: 40px;
+  left: 10px;
+  font-size: 10px;
+  padding: 0;
 }
