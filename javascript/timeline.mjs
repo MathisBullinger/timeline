@@ -74,7 +74,7 @@ class Timeline {
     this._events.forEach(event => {
       if (event.illustration) {
         event.illustration.position = event._bubble.position;
-        event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+        this._FitTexture(event);
       }
     })
 
@@ -257,9 +257,16 @@ class Timeline {
         event.illustration = textures[texture];
         event.illustration.visible = true;
         event.illustration.position = event._bubble.position;
-        event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+        this._FitTexture(event);
       }
     })
+  }
+
+  _FitTexture(event) {
+    if (event.illustration.width >= event.illustration.height)
+      event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+    else
+      event.illustration.scale.set(event._bubble.height / (event.illustration.height / event.illustration.scale.y) * 0.8);
   }
 
   _FileExists(url) {
