@@ -222,17 +222,18 @@ html {
   cursor: pointer;
   height: 20px;
   padding: 0;
-  line-height: 20px;
+  line-height: 10px;
   border: 0 solid #FFFFFF;
   border-radius: 30px;
   background-color: rgba(196, 196, 196, 0.6);
 }
 
 .onoffswitch-label:before {
+  transition-duration: 0.5s;
   content: "";
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   margin: -5px;
   background: #595755;
   position: absolute;
@@ -386,4 +387,34 @@ html {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+
+/* button */
+.button {
+  background: #DC516A;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  border-radius: 24.5px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  //font style
+  height: 100%;
+  line-height: 49px;
+  font-family: Helvetica;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+  &:hover {
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,0.2), 0 6px 12px 0 rgba(0,0,0,0.19);
+  }
+}
+
+/* start journey button */
+#start-journey {
+  position: absolute;
+  z-index: 500;
+  height: 49px;
+  width: 200px;
+  top: 250px;
+  left: calc(50% - 100px);
 }

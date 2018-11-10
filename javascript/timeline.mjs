@@ -332,7 +332,7 @@ class Timeline {
     $(".infobox > h1").html(event.name);
     $(".infobox > p").html("loading description...");
     $(".infobox").css({width: '100px', height: '100px'});
-    let left = this._split_pos - $('.infobox').outerWidth() / 2;
+    let left = event._bubble.position.x - $('.infobox').outerWidth() / 2;
     let top = this._line.position.y - $('.infobox').outerHeight() / 2;
     if (left < 100)
       left = 100;
