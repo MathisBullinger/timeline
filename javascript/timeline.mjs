@@ -1,4 +1,4 @@
-import {app, Graphics, canvas, Point} from './graphics.mjs';
+import {app, Graphics, canvas, Point, textures, LoadTextures} from './graphics.mjs';
 import {chronos} from './chronos.mjs';
 import {Wiki} from './wiki.mjs';
 import {color} from './colors.mjs';
@@ -37,7 +37,6 @@ class Timeline {
     this._date_label_offset = $('.label-start').offset().left / canvas.width;
 
     this.Zoom(21, canvas.width / 2);
-    //this.Zoom(100, canvas.width / 2);
 
     // draw line
     this._line.lineStyle(4, color.line, 1);
@@ -71,6 +70,23 @@ class Timeline {
       this.FitBubbles();
       this._last_fit = now;
     }
+    // reposition illustrations
+    this._events.forEach(event => {
+      if (event.illustration) {
+        event.illustration.position = event._bubble.position;
+        event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+      }
+    })
+
+    // move sprites to end of render list
+    if (app.stage.children.length >= 2) {
+        for (let i = app.stage.children.length - 2; i >= 0; i--) {
+          if (app.stage.children[i].constructor.name == 'Sprite') {
+            app.stage.children.push(app.stage.children.splice(i, 1)[0]);
+        };
+      }
+    }
+
     // update minimap
     const zoom = (this.date_last.year - this.date_first.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
     const left = (this.date_first.year - this._scroll_min.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
@@ -214,6 +230,43 @@ class Timeline {
   }
   _RemoveSplit() {
     this._split_date = undefined;
+  }
+
+
+  /*
+████████ ███████ ██   ██ ████████ ██    ██ ██████  ███████ ███████
+   ██    ██       ██ ██     ██    ██    ██ ██   ██ ██      ██
+   ██    █████     ███      ██    ██    ██ ██████  █████   ███████
+   ██    ██       ██ ██     ██    ██    ██ ██   ██ ██           ██
+   ██    ███████ ██   ██    ██     ██████  ██   ██ ███████ ███████
+*/
+
+  //
+  // Load Textures
+  //
+  LoadTextures() {
+    let illustrations = [];
+    for (let event of this._events) {
+      const path = 'data/illustrations/' + event.wiki_ref.toLowerCase() + '.png';
+      if (this._FileExists(path))
+        illustrations.push(event.wiki_ref.toLowerCase() + '.png');
+    }
+    LoadTextures(illustrations, 'data/illustrations/', _ => {
+      for (let texture in textures) {
+        const event = this._events.find(event => event.wiki_ref.toLowerCase() == texture);
+        event.illustration = textures[texture];
+        event.illustration.visible = true;
+        event.illustration.position = event._bubble.position;
+        event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+      }
+    })
+  }
+
+  _FileExists(url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
   }
 
   /*

@@ -6,7 +6,7 @@
 ██      ██ ██   ██ ██     ███████    ██     ██████  ██      ██
 */
 
-export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics, canvas, Point };
+export { InitPixi, LoadTextures, Resize, app, renderer, view, settings, Graphics, canvas, Point, textures };
 import { color } from './colors.mjs';
 
 var app;
@@ -14,9 +14,9 @@ var renderer;
 var view;
 var settings;
 var Graphics = PIXI.Graphics;
-var path_images = 'data/img/';
 var sprites = {};
 var Point = PIXI.Point;
+var textures = {};
 
 //
 // Init Pixi
@@ -61,8 +61,8 @@ function Resize() {
 //
 // Load Textures
 //
-function LoadTextures(images, on_done) {
-  images.forEach((value, i) => { images[i] = path_images + value });
+function LoadTextures(images, path, on_done) {
+  images.forEach((value, i) => { images[i] = path + value });
   PIXI.loader.add(images).load(()=>{
     for (let img of images) {
       sprites[img] = new PIXI.Sprite(PIXI.loader.resources[img].texture);
@@ -70,8 +70,8 @@ function LoadTextures(images, on_done) {
       // set max side width to 400
       let width = sprites[img].width;
       let height = sprites[img].height;
-      sprites[img].width = 400 * ( width < height ? width / height : 1 );
-      sprites[img].height = 400 * ( height < width ? height / width : 1 );
+      sprites[img].width = 100 * ( width < height ? width / height : 1 );
+      sprites[img].height = 100 * ( height < width ? height / width : 1 );
 
       // move into screen
       sprites[img].x += sprites[img].width / 2;
@@ -79,6 +79,11 @@ function LoadTextures(images, on_done) {
 
       // set anchor to center
       sprites[img].anchor.set(0.5, 0.5);
+
+      sprites[img].visible = false;
+
+      // shortcut
+      textures[img.split('/').pop().split('.')[0]] = sprites[img];
 
       app.stage.addChild(sprites[img]);
     }

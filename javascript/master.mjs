@@ -27,6 +27,7 @@ LoadJSON('data/events.json', data => {
   };
   timeline.LogTimepoints();
   timeline.FitBubbles();
+  timeline.LoadTextures();
   HandleStartJourney(timeline);
 });
 
