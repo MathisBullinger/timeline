@@ -11,15 +11,22 @@ class Timeline {
   // constructor
   //
   constructor() {
+    // current start and end
     this.date_first = new chronos.Date(-10000);
     this.date_last = new chronos.Date(2018);
     this._pos_y = 1 / 1.618;
     this._events = [];
     this._line = new Graphics();
+    // absolute start and end
+    this._time_start = new chronos.Date(-10000);
+    this._time_end = new chronos.Date(2018);
+    // scroll cap
+    this._scroll_min = new chronos.Date();
+    this._scroll_max = new chronos.Date();
+    //this._ApplyMargin();
     this._max_zoom = 250;
-    this._min_zoom = this.date_last.year - this.date_first.year;
-    this._scroll_min = this.date_first;
-    this._scroll_max = this.date_last;
+    this._min_zoom = 12000;
+    this._ApplyMargin();
     this._split_date = undefined;
     this._split_pos = 0;
     this._split_width = 250;
@@ -27,6 +34,9 @@ class Timeline {
     this._bubble_rad_min = 30;
     this._bubble_rad_max = 120;
     this._last_fit = new Date().getTime();
+
+    this.Zoom(100, canvas.width / 2);
+    this.Zoom(1, canvas.width / 2);
 
     // draw line
     this._line.lineStyle(4, color.line, 1);
@@ -46,6 +56,7 @@ class Timeline {
   // Resize
   //
   Resize() {
+    this._ApplyMargin();
     let now = new Date().getTime();
     this._line.width = canvas.width;
     for (let event of this._events) {
@@ -55,7 +66,7 @@ class Timeline {
       $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
       $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
     }
-    if (now - this._last_fit > 100) {
+    if (now - this._last_fit > 80) {
       this.FitBubbles();
       this._last_fit = now;
     }
@@ -273,6 +284,17 @@ class Timeline {
     let label = new PIXI.Text('', new PIXI.TextStyle({fontFamily: "Helvetica", fontSize: 13}));
     label.anchor.set(0.5, 0.5);
     return label;
+  }
+
+  //
+  // Apply margin to scroll cap
+  //
+  _ApplyMargin() {
+    const label_offset = 0.01;
+    const offset_years = this._GetPositionDate(label_offset * canvas.width).year - this.date_first.year;
+    this._scroll_min = new chronos.Date(this._time_start.year - offset_years);
+    this._scroll_max = new chronos.Date(this._time_end.year + offset_years);
+    this._min_zoom = this._scroll_max.year - this._scroll_min.year;
   }
 
   /*
