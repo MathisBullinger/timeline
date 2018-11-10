@@ -247,19 +247,24 @@ class Timeline {
   LoadTextures() {
     let illustrations = [];
     for (let event of this._events) {
-      const path = 'data/illustrations/' + event.wiki_ref.toLowerCase() + '.png';
+      const path = 'data/illustrations/' + this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png';
       if (this._FileExists(path))
-        illustrations.push(event.wiki_ref.toLowerCase() + '.png');
+        illustrations.push(this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png');
     }
     LoadTextures(illustrations, 'data/illustrations/', _ => {
       for (let texture in textures) {
-        const event = this._events.find(event => event.wiki_ref.toLowerCase() == texture);
+        const event = this._events.find(event => this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) == texture);
         event.illustration = textures[texture];
         event.illustration.visible = true;
         event.illustration.position = event._bubble.position;
         this._FitTexture(event);
+        console.log(encodeURI(texture));
       }
     })
+  }
+
+  _ReplaceUmlauts(str) {
+    return str.replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue');
   }
 
   _FitTexture(event) {
