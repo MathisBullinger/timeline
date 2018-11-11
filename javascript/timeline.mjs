@@ -427,10 +427,22 @@ class Timeline {
       $('.infobox > p').text(extract);
     });
 
-    // image
-    Wiki.GetImage(event.wiki_ref, img => {
-      $('.infobox-image').attr('src', img);
-    });
+    // load image
+    const resolutions = [128, 512, 1024, 2048];
+    let load_image = (i_res = 0) => {
+      if (i_res >= resolutions.length) return;
+      Wiki.GetImage(event.wiki_ref, resolutions[i_res], img => {
+        let info_img = new Image();
+        info_img.onload = _ => {
+          $(info_img).addClass('infobox-image');
+          $('.infobox > .infobox-image').replaceWith(info_img);
+          console.log('loaded ' + resolutions[i_res] + 'px');
+          load_image(i_res+1);
+        }
+        info_img.src = img;
+      });
+    }
+    load_image();
   }
 
   _HideInfoBox() {
