@@ -94,10 +94,16 @@ html {
   left: 5vw;
   width: 32px;
   height: 32px;
+  line-height: 32px;
+  text-align: center;
   border-radius: 100%;
   background-color: #595755;
   color: white;
   font-size: 20px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  }
 }
 
 #page-title {
@@ -194,29 +200,28 @@ $date-label-offset: 0.025;
     border-right: solid 10px transparent;
   }
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    padding: 12px;
-    cursor: pointer;
-    background-color: #fafafa;
-  }
-  /* Track */
-  ::-webkit-scrollbar-track {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-  }
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: #333;
-  }
-
-  ::-webkit-scrollbar-thumb:window-inactive {
-    background: #6f6f6f;
-  }
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  padding: 12px;
+  background-color: #fafafa;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #333;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: #6f6f6f;
+}
 .switch-date-wrap {
   position: absolute;
   z-index: 500;
@@ -312,15 +317,19 @@ $date-label-offset: 0.025;
     flex-direction: column;
     align-items: center;
 
-    > p {
+    > div.modal-text {
       width: 712px;
       font-family: Helvetica;
       line-height: 32px;
       font-size: 18px;
       letter-spacing: 0.06em;
       color: #595755;
+      max-height: 254px;
+      overflow: auto;
     }
-
+    > label {
+      margin-top: 24px;
+    }
     > div#close-explanation-box {
       //button style
       width: 226px;

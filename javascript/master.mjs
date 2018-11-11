@@ -71,7 +71,7 @@ $('.onoffswitch-checkbox').click(_ => {
 //
 // Show Info Button
 //
-$('.bt-showinfo').click(_ => $("#modal").css("display", "flex") );
+$('.bt-showinfo').click(_ => OpenExplanationModal(false) );
 
 //
 // Display mobile warning
@@ -116,10 +116,11 @@ function LoadJSON(file, callback) {
 //
 // open explanation modal
 //
-function OpenExplanationModal() {
-  if (ShowExplanationPage()) {
+function OpenExplanationModal(pageLoad = true) {
+  if (ShowExplanationPage() || !pageLoad) {
     //show modal
     $("#modal").css("display", "flex");
+    $("#explanation-box").css("display", "flex");
     // register close event
   }
 }

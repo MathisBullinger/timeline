@@ -56,12 +56,19 @@
   </div>
 
   <!-- First Time Greeting Page -->
-  <div id="modal">
+  <div id="modal" class="noselect">
     <div id="explanation-box">
       <div class="timeline-title">
         <p>A Brief History of<br /><span>Human Civilization</span></p>
       </div>
-      <p class="modal-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <div class="modal-text">
+        <h2 class="modal">Welcome to Chronologic!</h2>
+        <p class="modal">This is a round-way ticket to the past. In this interactive timeline you will be able to explore events in the History of Civilization. The essential events were curated using Cesare Emiliani’s Holocene calendar for you to entertain yourself while exploring it visually.</p>
+        <h2 class="modal">What is the Holocene calendar?</h2>
+        <p class="modal">The Holocene calendar or The Human Era calendar it’s a 1993 proposal by Cesare Emiliani to solve a number of problems with the current Anno Domini era.</p>
+        <p class="modal">Chronologic uses the Human Era calendar because it places its first year near the beginning of the Holocene geological epoch & the Neolithic Revolution, when humankind started to abandon the hunting/gathering lifestyle in exchange for agriculture and fixed settlements.</p>
+        <p class="modal">When   converting   Gregorian  AD   years   to   the   Holocene   Calendar   it   can   be   achieved   by adding 10,000 years to the AD year, therefore the current year 2018 would convert to 12,018.</p>
+      </div>
       <label class="container">Don't show me again
         <input id="dont-show-me-again" type="checkbox" checked="checked">
         <span class="checkmark"></span>
@@ -71,7 +78,7 @@
       </div>
     </div>
   </div>
-  <button class="bt-showinfo">?</button>
+  <div class="bt-showinfo">?</div>
 
   <!-- Scripts -->
   <script src="javascript/util/jquery.min.js" charset="utf-8"></script>
