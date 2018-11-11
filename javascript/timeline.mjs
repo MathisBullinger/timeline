@@ -1,4 +1,4 @@
-import {app, Graphics, canvas, Point} from './graphics.mjs';
+import {app, Graphics, canvas, Point, textures, LoadTextures} from './graphics.mjs';
 import {chronos} from './chronos.mjs';
 import {Wiki} from './wiki.mjs';
 import {color} from './colors.mjs';
@@ -11,15 +11,22 @@ class Timeline {
   // constructor
   //
   constructor() {
+    // current start and end
     this.date_first = new chronos.Date(-10000);
     this.date_last = new chronos.Date(2018);
     this._pos_y = 1 / 1.618;
     this._events = [];
     this._line = new Graphics();
+    // absolute start and end
+    this._time_start = new chronos.Date(-10000);
+    this._time_end = new chronos.Date(2018);
+    // scroll cap
+    this._scroll_min = new chronos.Date();
+    this._scroll_max = new chronos.Date();
+    //this._ApplyMargin();
     this._max_zoom = 250;
-    this._min_zoom = this.date_last.year - this.date_first.year;
-    this._scroll_min = this.date_first;
-    this._scroll_max = this.date_last;
+    this._min_zoom = 12000;
+    this._ApplyMargin();
     this._split_date = undefined;
     this._split_pos = 0;
     this._split_width = 250;
@@ -27,6 +34,9 @@ class Timeline {
     this._bubble_rad_min = 30;
     this._bubble_rad_max = 120;
     this._last_fit = new Date().getTime();
+    this._date_label_offset = $('.label-start').offset().left / canvas.width;
+
+    this.Zoom(21, canvas.width / 2);
 
     // draw line
     this._line.lineStyle(4, color.line, 1);
@@ -37,8 +47,8 @@ class Timeline {
 
     // start & end date marker
     //
-    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
-    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
+    $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width * this._date_label_offset).toStringType(this._date_type));
+    $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width - canvas.width * this._date_label_offset).toStringType(this._date_type));
 
   }
 
@@ -46,19 +56,37 @@ class Timeline {
   // Resize
   //
   Resize() {
+    this._ApplyMargin();
     let now = new Date().getTime();
     this._line.width = canvas.width;
     for (let event of this._events) {
       event._bubble.position.x = this._GetDatePosition(event.date).x;
       event._date_label.position.x = event._bubble.position.x;
       this.HideCollidingDates();
-      $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width / 100).toStringType(this._date_type));
-      $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width / 100 * 99).toStringType(this._date_type));
+      $('.label-start > p').text('year ' + this._GetPositionDate(canvas.width * this._date_label_offset).toStringType(this._date_type));
+      $('.label-end > p').text('year ' + this._GetPositionDate(canvas.width - canvas.width * this._date_label_offset).toStringType(this._date_type));
     }
-    if (now - this._last_fit > 100) {
+    if (now - this._last_fit > 80) {
       this.FitBubbles();
       this._last_fit = now;
     }
+    // reposition illustrations
+    this._events.forEach(event => {
+      if (event.illustration) {
+        event.illustration.position = event._bubble.position;
+        this._FitTexture(event);
+      }
+    })
+
+    // move sprites to end of render list
+    if (app.stage.children.length >= 2) {
+        for (let i = app.stage.children.length - 2; i >= 0; i--) {
+          if (app.stage.children[i].constructor.name == 'Sprite') {
+            app.stage.children.push(app.stage.children.splice(i, 1)[0]);
+        };
+      }
+    }
+
     // update minimap
     const zoom = (this.date_last.year - this.date_first.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
     const left = (this.date_first.year - this._scroll_min.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
@@ -169,6 +197,12 @@ class Timeline {
       }
     }
 
+    // reposition date label
+    events.forEach(event => {
+      event._date_label.position.y = event._bubble.position.y +
+        (event._bubble.radius + 20) * (event._bubble.position.y >= this._line.position.y ? 1 : -1);
+    })
+
   }
 
   //
@@ -196,6 +230,59 @@ class Timeline {
   }
   _RemoveSplit() {
     this._split_date = undefined;
+  }
+
+
+  /*
+████████ ███████ ██   ██ ████████ ██    ██ ██████  ███████ ███████
+   ██    ██       ██ ██     ██    ██    ██ ██   ██ ██      ██
+   ██    █████     ███      ██    ██    ██ ██████  █████   ███████
+   ██    ██       ██ ██     ██    ██    ██ ██   ██ ██           ██
+   ██    ███████ ██   ██    ██     ██████  ██   ██ ███████ ███████
+*/
+
+  //
+  // Load Textures
+  //
+  LoadTextures() {
+    let illustrations = [];
+    let texture_log = [];
+    for (let event of this._events) {
+      const path = 'data/illustrations/' + this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png';
+      if (this._FileExists(path)) {
+        illustrations.push(this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png');
+        texture_log[path] = {status: 'ok'};
+      } else
+        texture_log[path] = {status: '404'};
+    }
+    console.table(texture_log);
+    LoadTextures(illustrations, 'data/illustrations/', _ => {
+      for (let texture in textures) {
+        const event = this._events.find(event => this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) == texture);
+        event.illustration = textures[texture];
+        event.illustration.visible = true;
+        event.illustration.position = event._bubble.position;
+        this._FitTexture(event);
+      }
+    })
+  }
+
+  _ReplaceUmlauts(str) {
+    return str.replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue');
+  }
+
+  _FitTexture(event) {
+    if (event.illustration.width >= event.illustration.height)
+      event.illustration.scale.set(event._bubble.width / (event.illustration.width / event.illustration.scale.x) * 0.8);
+    else
+      event.illustration.scale.set(event._bubble.height / (event.illustration.height / event.illustration.scale.y) * 0.8);
+  }
+
+  _FileExists(url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
   }
 
   /*
@@ -275,6 +362,16 @@ class Timeline {
     return label;
   }
 
+  //
+  // Apply margin to scroll cap
+  //
+  _ApplyMargin() {
+    const offset_years = this._GetPositionDate(this._date_label_offset * canvas.width).year - this.date_first.year;
+    this._scroll_min = new chronos.Date(this._time_start.year - offset_years);
+    this._scroll_max = new chronos.Date(this._time_end.year + offset_years);
+    this._min_zoom = this._scroll_max.year - this._scroll_min.year;
+  }
+
   /*
 ████████ ██ ████████ ██      ███████        ██        ██ ███    ██ ███████  ██████      ██████   ██████  ██   ██
    ██    ██    ██    ██      ██             ██        ██ ████   ██ ██      ██    ██     ██   ██ ██    ██  ██ ██
@@ -330,10 +427,21 @@ class Timeline {
       $('.infobox > p').text(extract);
     });
 
-    // image
-    Wiki.GetImage(event.wiki_ref, img => {
-      $('.infobox-image').attr('src', img);
-    });
+    // load image
+    const resolutions = [128, 512, 1024, 2048];
+    let load_image = (i_res = 0) => {
+      if (i_res >= resolutions.length) return;
+      Wiki.GetImage(event.wiki_ref, resolutions[i_res], img => {
+        let info_img = new Image();
+        info_img.onload = _ => {
+          $(info_img).addClass('infobox-image');
+          $('.infobox > .infobox-image').replaceWith(info_img);
+          load_image(i_res+1);
+        }
+        info_img.src = img;
+      });
+    }
+    load_image();
   }
 
   _HideInfoBox() {

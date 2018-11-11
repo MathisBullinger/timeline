@@ -27,6 +27,7 @@ LoadJSON('data/events.json', data => {
   };
   timeline.LogTimepoints();
   timeline.FitBubbles();
+  timeline.LoadTextures();
   HandleStartJourney(timeline);
 });
 
@@ -38,6 +39,7 @@ $('.infobox-size-toggle').click(_ => {
 // Test Animation
 //
 $('.bt-animtest').click(_ => {
+  const zoom_inital = timeline.date_last.year - timeline.date_first.year;
   timeline.ScrollTo(new chronos.Date(-3300), 1500);
   timeline.ZoomTo(2000, 1500, _ => {
     timeline.ScrollTo(new chronos.Date(-2560), 900, _ => {
@@ -47,7 +49,7 @@ $('.bt-animtest').click(_ => {
         timeline.ScrollTo(new chronos.Date(1945), 5000, _ => {
           timeline.ZoomTo(50, 800, _ => {
             timeline.ScrollTo(new chronos.Date(1969), 2500, _ => {
-              timeline.ZoomTo(12018, 3000);
+              timeline.ZoomTo(zoom_inital, 3000);
             });
           })
         });
@@ -63,7 +65,13 @@ $('.onoffswitch-checkbox').click(_ => {
   const type_new = $('.date-type').text() == 'Holocene' ? 'Gregorian' : 'Holocene';
   $('.date-type').text(type_new);
   timeline.SetDateType(type_new);
+  timeline.Resize();
 })
+
+//
+// Show Info Button
+//
+$('.bt-showinfo').click(_ => $("#modal").css("display", "flex") );
 
 //
 // Display mobile warning
@@ -113,12 +121,13 @@ function OpenExplanationModal() {
     //show modal
     $("#modal").css("display", "flex");
     // register close event
-    $("#close-explanation-box").click(function () {
-      DontShowMeAgain();
-      CloseExplanationModal();
-    })
   }
 }
+
+$("#close-explanation-box").click(function () {
+  DontShowMeAgain();
+  CloseExplanationModal();
+})
 
 //
 // close explanation modal
