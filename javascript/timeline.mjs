@@ -436,7 +436,6 @@ class Timeline {
         info_img.onload = _ => {
           $(info_img).addClass('infobox-image');
           $('.infobox > .infobox-image').replaceWith(info_img);
-          console.log('loaded ' + resolutions[i_res] + 'px');
           load_image(i_res+1);
         }
         info_img.src = img;

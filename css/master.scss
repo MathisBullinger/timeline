@@ -1,5 +1,15 @@
 @import 'infobox';
 
+// hide anim test and journey button
+.bt-animtest, #start-journey {
+  background-color: white !important;
+  color: grey !important;
+  opacity: 0.2 !important;
+  height: 20px !important;
+  width: 80px !important;
+  box-shadow: none !important;
+}
+
 body,
 html {
   margin: 0;
@@ -429,8 +439,8 @@ $date-label-offset: 0.025;
   z-index: 500;
   height: 25px;
   width: 100px;
-  top: 0;
-  left: 100px;
+  top: 20px;
+  left: 0;
   font-size: 10px;
   padding: 0;
 }
