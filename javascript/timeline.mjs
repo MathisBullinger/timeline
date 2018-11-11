@@ -246,11 +246,16 @@ class Timeline {
   //
   LoadTextures() {
     let illustrations = [];
+    let texture_log = [];
     for (let event of this._events) {
       const path = 'data/illustrations/' + this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png';
-      if (this._FileExists(path))
+      if (this._FileExists(path)) {
         illustrations.push(this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) + '.png');
+        texture_log[path] = {status: 'ok'};
+      } else
+        texture_log[path] = {status: '404'};
     }
+    console.table(texture_log);
     LoadTextures(illustrations, 'data/illustrations/', _ => {
       for (let texture in textures) {
         const event = this._events.find(event => this._ReplaceUmlauts(event.wiki_ref.toLowerCase()) == texture);
@@ -258,7 +263,6 @@ class Timeline {
         event.illustration.visible = true;
         event.illustration.position = event._bubble.position;
         this._FitTexture(event);
-        console.log(encodeURI(texture));
       }
     })
   }
