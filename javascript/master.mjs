@@ -69,6 +69,11 @@ $('.onoffswitch-checkbox').click(_ => {
 })
 
 //
+// Show Info Button
+//
+$('.bt-showinfo').click(_ => $("#modal").css("display", "flex") );
+
+//
 // Display mobile warning
 //
 function MobileWarning() {
@@ -116,12 +121,13 @@ function OpenExplanationModal() {
     //show modal
     $("#modal").css("display", "flex");
     // register close event
-    $("#close-explanation-box").click(function () {
-      DontShowMeAgain();
-      CloseExplanationModal();
-    })
   }
 }
+
+$("#close-explanation-box").click(function () {
+  DontShowMeAgain();
+  CloseExplanationModal();
+})
 
 //
 // close explanation modal
