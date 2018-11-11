@@ -64,6 +64,7 @@ $('.onoffswitch-checkbox').click(_ => {
   const type_new = $('.date-type').text() == 'Holocene' ? 'Gregorian' : 'Holocene';
   $('.date-type').text(type_new);
   timeline.SetDateType(type_new);
+  timeline.Resize();
 })
 
 //
