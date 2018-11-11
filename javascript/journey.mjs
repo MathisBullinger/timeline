@@ -9,7 +9,7 @@ function HandleStartJourney (timeline) {
       timeline.ZoomTo(6018, 900);
     }
     if (current < total) {
-      NexStep(timeline, this);
+      NextStep(timeline, this);
     } else {
       current = 0;
       $(".infobox").hide();
@@ -19,7 +19,7 @@ function HandleStartJourney (timeline) {
 }
 
 // go to next step in journey
-function NexStep (timeline, el) {
+function NextStep (timeline, el) {
   timeline._CloseTitleBox();
   timeline.ScrollTo(timeline._events[current].date, 700, function () {
       let total = timeline._events.length
