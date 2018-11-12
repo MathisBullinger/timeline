@@ -35,6 +35,7 @@ class Timeline {
     this._bubble_rad_max = 120;
     this._last_fit = new Date().getTime();
     this._date_label_offset = $('.label-start').offset().left / canvas.width;
+    this._minimap_markers = [];
 
     this.Zoom(21, canvas.width / 2);
 
@@ -91,6 +92,11 @@ class Timeline {
     const zoom = (this.date_last.year - this.date_first.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
     const left = (this.date_first.year - this._scroll_min.year) / (this._scroll_max.year - this._scroll_min.year) * 100 + '%';
     $('.minimap > .select').css({width: zoom, 'margin-left': left});
+
+    for (let i = this._minimap_markers.length - 1; i >= 0; i--) {
+      app.stage.removeChild(this._minimap_markers[i]);
+      this._AddMinimapMarker(this._minimap_markers.splice(i, 1)[0].date);
+    }
   }
 
   //
@@ -98,10 +104,11 @@ class Timeline {
   //
   _AddMinimapMarker(date) {
     const marker = new Graphics();
+    this._minimap_markers.push(marker);
+    marker.date = date;
     marker.lineStyle(2, 0x595755, 1);
     let pos = $('.minimap').offset().left + 1 + ($('.minimap').outerWidth() - 2) *
     ( (date.year - this._time_start.year) / (this._time_end.year - this._time_start.year) );
-    console.log(pos);
     marker.moveTo(pos, $('.minimap').offset().top - 2);
     marker.lineTo(pos, $('.minimap').offset().top + $('.minimap').outerHeight() + 2);
     app.stage.addChild(marker);
