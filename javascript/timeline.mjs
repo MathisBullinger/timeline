@@ -133,11 +133,11 @@ class Timeline {
   //
   // Render Bubble
   //
-  _RenderBubble(event, radius, border_width, position) {
+  _RenderBubble(event, radius, border_width, fill_color = color.fill) {
     app.stage.removeChild(event._bubble);
     event._bubble = new Graphics;
     event._bubble.lineStyle(border_width, color.line, 1);
-    event._bubble.beginFill(color.fill);
+    event._bubble.beginFill(fill_color);
     event._bubble.drawCircle(0, 0, radius);
     event._bubble.position = this._GetDatePosition(event.date);
     event._bubble.endFill();
@@ -181,8 +181,12 @@ class Timeline {
 
     // set non colliding bubbles to min distance
     events.forEach(event => {
-      if (!collisions.includes(event))
-        this._RenderBubble(event, dist_min / 2, 2)
+      if (!collisions.includes(event)) {
+        if (event.illustration)
+          this._RenderBubble(event, dist_min / 2, 2);
+        else
+          this._RenderBubble(event, this._bubble_rad_min / 2, 2, color.line);
+      }
     });
 
     // create array of colliding events
@@ -192,8 +196,11 @@ class Timeline {
     const bubble_off = 40;
     if (collisions.length > 0) {
       for (let i in collisions) {
-        this._RenderBubble(collisions[i], this._bubble_rad_min, 2);
-        collisions[i]._bubble.position.y = this._line.position.y + bubble_off * (i % 2 ? 1 : -1);
+        if (collisions[i].illustration)
+          this._RenderBubble(collisions[i], this._bubble_rad_min, 2);
+        else
+          this._RenderBubble(collisions[i], this._bubble_rad_min / 2, 2, color.line);
+        collisions[i]._bubble.position.y = this._line.position.y + bubble_off * (collisions[i].illustration ? 1 : 0.8) * (i % 2 ? 1 : -1);
       }
     }
 
