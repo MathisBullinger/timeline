@@ -93,6 +93,20 @@ class Timeline {
     $('.minimap > .select').css({width: zoom, 'margin-left': left});
   }
 
+  //
+  // Add event marker top minimap
+  //
+  _AddMinimapMarker(date) {
+    const marker = new Graphics();
+    marker.lineStyle(2, 0x595755, 1);
+    let pos = $('.minimap').offset().left + 1 + ($('.minimap').outerWidth() - 2) *
+    ( (date.year - this._time_start.year) / (this._time_end.year - this._time_start.year) );
+    console.log(pos);
+    marker.moveTo(pos, $('.minimap').offset().top - 2);
+    marker.lineTo(pos, $('.minimap').offset().top + $('.minimap').outerHeight() + 2);
+    app.stage.addChild(marker);
+  }
+
   /*
 ████████ ██ ███    ███ ███████ ██████   ██████  ██ ███    ██ ████████
    ██    ██ ████  ████ ██      ██   ██ ██    ██ ██ ████   ██    ██
@@ -128,6 +142,8 @@ class Timeline {
     }
 
     app.stage.addChild(timepoint._date_label);
+
+    this._AddMinimapMarker(timepoint.date);
   }
 
   //
@@ -271,6 +287,7 @@ class Timeline {
         event.illustration.position = event._bubble.position;
         this._FitTexture(event);
       }
+      this.Resize();
     })
   }
 
