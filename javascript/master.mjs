@@ -4,7 +4,6 @@ import { chronos } from './chronos.mjs';
 import { InitPixi , LoadTextures, Resize, app, view, renderer, settings, Graphics} from './graphics.mjs';
 import { Timeline } from  './timeline.mjs';
 import { interaction } from './interaction.mjs';
-import {HandleStartJourney} from './journey.mjs';
 
 MobileWarning();
 InitPixi();
@@ -27,7 +26,6 @@ LoadJSON('data/events.json', data => {
   timeline.LogTimepoints();
   timeline.FitBubbles();
   timeline.LoadTextures();
-  HandleStartJourney(timeline);
 });
 
 $('.infobox-size-toggle').click(_ => {

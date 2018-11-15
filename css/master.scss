@@ -1,7 +1,7 @@
 @import 'infobox';
 
-// hide anim test and journey button
-.bt-animtest, #start-journey {
+// hide anim test button
+.bt-animtest {
   background-color: white !important;
   color: grey !important;
   opacity: 0.2 !important;
@@ -440,16 +440,4 @@ $date-label-offset: 0.025;
   &:hover {
     box-shadow: 0 1px 6px 0 rgba(0,0,0,0.2), 0 6px 12px 0 rgba(0,0,0,0.19);
   }
-}
-
-/* start journey button */
-#start-journey {
-  position: absolute;
-  z-index: 500;
-  height: 25px;
-  width: 100px;
-  top: 20px;
-  left: 0;
-  font-size: 10px;
-  padding: 0;
 }
