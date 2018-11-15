@@ -23,7 +23,6 @@ class Timeline {
     // scroll cap
     this._scroll_min = new chronos.Date();
     this._scroll_max = new chronos.Date();
-    //this._ApplyMargin();
     this._max_zoom = 250;
     this._min_zoom = 12000;
     this._ApplyMargin();
@@ -181,7 +180,11 @@ class Timeline {
     if (events.length == 0)
       return;
     if (events.length == 1) {
-      this._RenderBubble(events[0], this._bubble_rad_max, 2)
+      if (events[0].illustration)
+        this._RenderBubble(events[0], this._bubble_rad_max, 2);
+      else
+        this._RenderBubble(events[0], this._bubble_rad_min / 2, 2, color.line);
+
       return;
     }
 
@@ -190,7 +193,6 @@ class Timeline {
     let collisions = [];
     for (let i = 1; i < events.length; i++) {
       const dist = events[i]._bubble.position.x - events[i-1]._bubble.position.x;
-      //console.log(dist);
       if (dist < this._bubble_rad_min * 2) {
         if (!collisions.includes(i-1))
           collisions.push(i-1);
