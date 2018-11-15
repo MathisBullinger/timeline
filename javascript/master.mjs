@@ -57,6 +57,17 @@ $('.minimap').click(e => {
 });
 
 //
+// click nametag
+//
+$('.nametag').click(e => {
+  const target_str = e.target.textContent;
+  const target_event = timeline._events.find(e => e.name == target_str);
+  if (target_event) {
+    timeline.ScrollTo(target_event.date);
+  }
+})
+
+//
 // Test Animation
 //
 $('.bt-animtest').click(_ => {

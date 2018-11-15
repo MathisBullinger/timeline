@@ -96,6 +96,11 @@ class Timeline {
       app.stage.removeChild(this._minimap_markers[i]);
       this._AddMinimapMarker(this._minimap_markers.splice(i, 1)[0].date);
     }
+
+    // update nametag position
+    if (this._nametag_target) {
+      $('.nametag').css('left', this._nametag_target._bubble.position.x - $('.nametag').outerWidth() / 2);
+    }
   }
 
   //
@@ -422,17 +427,19 @@ class Timeline {
   // open title-box
   //
   _OpenTitleBox(event) {
-    $(".nametag h1").html(event.name);
-    $(".nametag").css("top", event._bubble.position.y - ($(".nametag").outerHeight() / 2) - event._bubble.radius - 70);
-    $(".nametag").css("left", event._bubble.position.x - $(".nametag").outerWidth() / 2);
-    $(".nametag").show();
+    $('.nametag h1').html(event.name);
+    $('.nametag').css('top', event._bubble.position.y - ($('.nametag').outerHeight() / 2) - event._bubble.radius - 70);
+    $('.nametag').css('left', event._bubble.position.x - $('.nametag').outerWidth() / 2);
+    this._nametag_target = event;
+    $('.nametag').show();
   }
 
   //
   // close title-box
   //
   _CloseTitleBox(event) {
-    $(".nametag").hide();
+    $('.nametag').hide();
+    this._nametag_target = undefined;
   }
 
   //
@@ -442,18 +449,18 @@ class Timeline {
     this._CloseTitleBox();
     $('.infobox-image').attr('src', 'https://via.placeholder.com/150')
     // set title
-    $(".infobox > h1").html(event.name);
-    $(".infobox > p").html("loading description...");
-    $(".infobox").css({width: '100px', height: '100px'});
+    $('.infobox > h1').html(event.name);
+    $('.infobox > p').html('loading description...');
+    $('.infobox').css({width: '100px', height: '100px'});
     let left = event._bubble.position.x - $('.infobox').outerWidth() / 2;
     let top = this._line.position.y - $('.infobox').outerHeight() / 2;
     if (left < 100)
       left = 100;
     if (left > window.innerWidth - 200)
       left = window.innerWidth - 200;
-    $(".infobox").css({left: left, top: top});
+    $('.infobox').css({left: left, top: top});
     // show infobox
-    $(".infobox").show();
+    $('.infobox').show();
     $('.infobox').animate({
       left: left - (300 - $('.infobox').outerWidth()) / 2,
       top: top - (300 - $('.infobox').outerHeight()) / 2,
