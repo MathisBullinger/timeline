@@ -1,9 +1,18 @@
 'use strict';
 
-import { chronos } from './chronos.mjs';
-import { InitPixi , LoadTextures, Resize, app, view, renderer, settings, Graphics} from './graphics.mjs';
-import { Timeline } from  './timeline.mjs';
-import { interaction } from './interaction.mjs';
+import {chronos} from './chronos.mjs';
+import {
+  InitPixi,
+  LoadTextures,
+  Resize,
+  app,
+  view,
+  renderer,
+  settings,
+  Graphics
+} from './graphics.mjs';
+import {Timeline} from './timeline.mjs';
+import {interaction} from './interaction.mjs';
 
 MobileWarning();
 InitPixi();
@@ -18,8 +27,12 @@ LoadJSON('data/events.json', data => {
     let name = event.name;
     let date = new chronos.Date(
       event.date[0], // year
-      event.date.length >= 2 ? event.date[1] : 0, // month
-      event.date.length >= 3 ? event.date[2] : 0); // day
+          event.date.length >= 2
+      ? event.date[1]
+      : 0, // month
+        event.date.length >= 3
+      ? event.date[2]
+      : 0); // day
     let wiki_ref = event.wiki;
     timeline.AddEvent(new chronos.Timepoint(name, date, wiki_ref));
   };
@@ -30,6 +43,17 @@ LoadJSON('data/events.json', data => {
 
 $('.infobox-size-toggle').click(_ => {
   $('.infobox').toggleClass('infobox-extended');
+});
+
+//
+// click on minimap
+//
+$('.minimap').click(e => {
+  const pos_x_rel = (e.clientX - $('.minimap').offset().left) / $('.minimap').outerWidth();
+  if (timeline) {
+    const target_date = new chronos.Date(timeline._time_start.year + (timeline._time_end.year - timeline._time_start.year) * pos_x_rel);
+    timeline.ScrollTo(target_date);
+  }
 });
 
 //
@@ -59,7 +83,9 @@ $('.bt-animtest').click(_ => {
 // Toggle Date
 //
 $('.onoffswitch-checkbox').click(_ => {
-  const type_new = $('.date-type').text() == 'Holocene' ? 'Gregorian' : 'Holocene';
+  const type_new = $('.date-type').text() == 'Holocene'
+    ? 'Gregorian'
+    : 'Holocene';
   $('.date-type').text(type_new);
   timeline.SetDateType(type_new);
   timeline.Resize();
@@ -68,13 +94,13 @@ $('.onoffswitch-checkbox').click(_ => {
 //
 // Show Info Button
 //
-$('.bt-showinfo').click(_ => {} );
+$('.bt-showinfo').click(_ => {});
 
 //
 // Display mobile warning
 //
 function MobileWarning() {
-  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
     $('body').append(`
       <div class="phoneblock">
         <p>This website doesn't support a mobile view yet.<p>
@@ -91,8 +117,7 @@ function MobileWarning() {
 function SayHello() {
   (today => console.log(`\n  ${ '\u{1F4C5} \u{1F5D3} '.repeat(7)}\u{1F4C5}\n\nToday is the
   ${today.gregorian.toString()} - that's the ${today.holocene.toString()} in the Holocene calendar.\n
-  %c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796\n`,
-  'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
+  %c\u2796\u{1F54C}\u2796\u{1F53A}\u2796\u{1F5FF}\u2796\u{1F3DB}\u2796\u{1F3F0}\u2796\u{1F3ED}\u2796\u{1F680}\u2796\n`, 'font-size: 20px'))(new chronos.Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 }
 
 //

@@ -45,7 +45,8 @@ html {
   z-index: 500;
   background-color: rgba(196, 196, 196, 0.64);
   border-radius: 4px;
-  pointer-events: none;
+  // pointer-events: none;
+  display: block;
 
   .select {
     width: 100%;
