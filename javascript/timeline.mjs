@@ -336,7 +336,6 @@ class Timeline {
       if (this._events[i]._bubble.position.y > this._line.position.y != this._events[i-1]._bubble.position.y > this._line.position.y) {
         l1.visible = true;
         l2.visible = true;
-        console.log(this._events[i-1].name + ' & ' + this._events[i].name);
         continue
       };
       l1.visible = (l2.visible && l1.position.x - l1.width / 2 <= l2.position.x + l2.width / 2)
