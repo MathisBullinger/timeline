@@ -423,7 +423,7 @@ class Timeline {
   //
   _OpenTitleBox(event) {
     $(".nametag h1").html(event.name);
-    $(".nametag").css("top", event._bubble.position.y - ($(".nametag").outerHeight() / 2) - 85);
+    $(".nametag").css("top", event._bubble.position.y - ($(".nametag").outerHeight() / 2) - event._bubble.radius - 70);
     $(".nametag").css("left", event._bubble.position.x - $(".nametag").outerWidth() / 2);
     $(".nametag").show();
   }
